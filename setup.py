@@ -1,5 +1,5 @@
 import os
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -13,9 +13,10 @@ setup(
     license='BSD',
     url='http://github.com/philomat/django-persistent-messages',
     keywords = ['messages', 'django', 'persistent',],
-    packages=[
-        'persistent_messages',
-    ],
+    packages=find_packages(),
+    package_data={'persistent_messages': [
+        'templates/*/*/*.html',
+        'templates/*/*/*/*.html']},
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
