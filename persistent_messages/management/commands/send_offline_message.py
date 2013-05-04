@@ -1,6 +1,6 @@
 import sys
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from django.contrib.auth.models import User
 
@@ -18,6 +18,7 @@ def get_user(username):
     except User.DoesNotExist:
         err("No such user: %r" % username)
 
+
 class Command(BaseCommand):
     args = 'from_user to_user message'
     help = '''Send an offline message
@@ -32,4 +33,5 @@ class Command(BaseCommand):
 
         message = " ".join(args[2:])
         api.add_message_without_storage(level=api.constants.INFO,
-        	from_user=from_user, to_user=to_user, message=message)
+                                        from_user=from_user, to_user=to_user,
+                                        message=message)

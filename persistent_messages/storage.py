@@ -1,7 +1,5 @@
 import datetime
 
-from django.contrib import messages 
-from django.contrib.messages.storage.base import BaseStorage
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.db.models import Q
@@ -16,6 +14,7 @@ def get_user(request):
         return request.user
     else:
         return AnonymousUser()
+
 
 """
 Messages need a primary key when being displayed so that they can be closed/marked as read by the user.
@@ -41,16 +40,17 @@ class PersistentMessageStorage(FallbackStorage):
         """
         Gets the messages from the model. If `exclude_unread` is set to True, read messages are excluded
         """
-        qs = Message.objects.filter(user=get_user(self.request)).filter(Q(expires=None) | Q(expires__gt=datetime.datetime.now()))
+        qs = Message.objects.filter(user=get_user(self.request)).filter(
+            Q(expires=None) | Q(expires__gt=datetime.datetime.now()))
 
         # If the function didn't get an exclude_read argument, we look for it in settings
         if exclude_read is None:
             # By default read messages are not excluded, we show all messages
             exclude_read = getattr(settings, 'EXCLUDE_READ', False)
-        
+
         if exclude_read:
             qs = qs.exclude(read=True)
-        
+
         return qs
 
     def _get(self, *args, **kwargs):
@@ -77,22 +77,26 @@ class PersistentMessageStorage(FallbackStorage):
         """
         Get read and unread persistent messages
         """
-        return self._message_queryset(exclude_read=False).filter(level__in=PERSISTENT_MESSAGE_LEVELS)
+        return self._message_queryset(exclude_read=False).filter(
+            level__in=PERSISTENT_MESSAGE_LEVELS)
 
     def get_persistent_unread(self):
         """
         Get unread persistent messages
         """
-        return self._message_queryset(exclude_read=True).filter(level__in=PERSISTENT_MESSAGE_LEVELS)
+        return self._message_queryset(exclude_read=True).filter(
+            level__in=PERSISTENT_MESSAGE_LEVELS)
 
     def get_nonpersistent(self):
         """
         Gets nonpersistent messages, loads `self.non_persistent_messages` and sets `self.used` to `True`
         so that the middleware deletes them when calling `update` method
         """
-        nonpersistent_messages = self._message_queryset(exclude_read=False).exclude(level__in=PERSISTENT_MESSAGE_LEVELS)
+        nonpersistent_messages = self._message_queryset(
+            exclude_read=False).exclude(level__in=PERSISTENT_MESSAGE_LEVELS)
 
-        self.non_persistent_messages = [message for message in nonpersistent_messages]
+        self.non_persistent_messages = [message for message in
+                                        nonpersistent_messages]
         self.used = True
 
         return nonpersistent_messages
@@ -108,12 +112,13 @@ class PersistentMessageStorage(FallbackStorage):
         Counts persistent unread messages
         """
         return self.get_persistent_unread().count()
-        
+
     def count_nonpersistent(self):
         """
         Counts nonpersistent messages
         """
-        return self._message_queryset(exclude_read=False).exclude(level__in=PERSISTENT_MESSAGE_LEVELS).count()
+        return self._message_queryset(exclude_read=False).exclude(
+            level__in=PERSISTENT_MESSAGE_LEVELS).count()
 
     def _delete_non_persistent(self):
         """
@@ -143,9 +148,10 @@ class PersistentMessageStorage(FallbackStorage):
         """
         is_anonymous = not get_user(self.request).is_authenticated()
         if is_anonymous:
-            return super(PersistentMessageStorage, self)._prepare_messages(messages)
+            return super(PersistentMessageStorage, self)._prepare_messages(
+                messages)
         pass
-        
+
     def _store(self, messages, response, *args, **kwargs):
         """
         Stores a list of messages, returning a list of any messages which could
@@ -156,7 +162,9 @@ class PersistentMessageStorage(FallbackStorage):
         """
         is_anonymous = not get_user(self.request).is_authenticated()
         if is_anonymous:
-            return super(PersistentMessageStorage, self)._store(messages, response, *args, **kwargs)
+            return super(PersistentMessageStorage, self)._store(messages,
+                                                                response, *args,
+                                                                **kwargs)
 
         for message in messages:
             if not self.used or message.is_persistent():
@@ -179,7 +187,8 @@ class PersistentMessageStorage(FallbackStorage):
 
         return super(PersistentMessageStorage, self).update(response)
 
-    def add(self, level, message, extra_tags='', subject='', user=None, from_user=None, expires=None, close_timeout=None):
+    def add(self, level, message, extra_tags='', subject='', user=None,
+            from_user=None, expires=None, close_timeout=None):
         """
         Adds or queues a message to the storage
 
@@ -197,9 +206,11 @@ class PersistentMessageStorage(FallbackStorage):
         to_user = user or get_user(self.request)
         if not to_user.is_authenticated():
             if Message(level=level).is_persistent():
-                raise NotImplementedError('Persistent message levels cannot be used for anonymous users.')
+                raise NotImplementedError(
+                    'Persistent message levels cannot be used for anonymous users.')
             else:
-                return super(PersistentMessageStorage, self).add(level, message, extra_tags)
+                return super(PersistentMessageStorage, self).add(level, message,
+                                                                 extra_tags)
         if not message:
             return
 
@@ -209,8 +220,10 @@ class PersistentMessageStorage(FallbackStorage):
             return
 
         # Add the message
-        message = Message(user=to_user, level=level, message=message, extra_tags=extra_tags, subject=subject, 
-            from_user=from_user, expires=expires, close_timeout=close_timeout)
+        message = Message(user=to_user, level=level, message=message,
+                          extra_tags=extra_tags, subject=subject,
+                          from_user=from_user, expires=expires,
+                          close_timeout=close_timeout)
 
         # Messages need a primary key when being displayed so that they can be closed/marked as read by the user.
         # Hence, save it now instead of adding it to queue:

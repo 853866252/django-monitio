@@ -1,9 +1,11 @@
-from persistent_messages.models import Message
-from persistent_messages.storage import get_user
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
+
+from persistent_messages.models import Message
+from persistent_messages.storage import get_user
+
 
 def message_detail(request, message_id):
     user = get_user(request)
@@ -14,8 +16,9 @@ def message_detail(request, message_id):
     message.read = True
     message.save()
 
-    return render_to_response('persistent_messages/message/detail.html', {'message': message}, 
-        context_instance=RequestContext(request))
+    return render_to_response('persistent_messages/message/detail.html',
+                              {'message': message},
+                              context_instance=RequestContext(request))
 
 
 def message_delete(request, message_id):
