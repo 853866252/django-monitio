@@ -1,60 +1,161 @@
-{% if messages %}
 <script type="text/javascript">
-//<![CDATA[
-$(document).ready(function() {
-    var messageSelector = '.messages li';
+    //<![CDATA[
+
+    var messageSelector = '.message';
     var closeSelector = '.message-close';
     var closeAllSelector = '.message-close-all';
-    $.fn.messageClose = function() {
-        $(this).fadeTo('fast', 0, function() {
-            $(this).hide('fast', function() {
-                $(this).remove();
+    var closeAllSelectorDiv = '.message-close-all-div';
+
+    $(document).ready(function () {
+
+        $.fn.messageOpen = function () {
+            $(this).show('fast');
+        };
+        $.fn.messageClose = function () {
+            $(this).fadeTo('fast', 0, function () {
+                $(this).hide('fast', function () {
+                    $(this).remove();
+                });
             });
-        });
-    };
-    $.fn.messageCloseTimeout = function(interval) {
-        var _this = $(this);
-        setTimeout(function() {
-            _this.messageClose();
-            var close = _this.find(closeSelector);
-            if (close.attr('href') != '#') {
+        };
+        $.fn.messageCloseTimeout = function (interval) {
+            var _this = $(this);
+            setTimeout(function () {
+                _this.messageClose();
+                var close = _this.find(closeSelector);
+                if (close.attr('href') != '#') {
+                    $.ajax({
+                        url: $(this).attr('href')
+                    })
+                }
+            }, interval)
+        };
+        $(closeSelector).click(function (event) {
+            event.preventDefault();
+            if ($(this).attr('href') != '#') {
                 $.ajax({
                     url: $(this).attr('href')
                 })
             }
-        }, interval)
-    };
-    $(closeSelector).click(function(event) {
-        event.preventDefault();
-        if ($(this).attr('href') != '#') {
+            if ($(messageSelector).length <= 2) {
+                $(closeAllSelectorDiv).messageClose();
+            }
+            $(this).closest(messageSelector).messageClose();
+        });
+        $(closeAllSelector).click(function (event) {
+            event.preventDefault();
             $.ajax({
                 url: $(this).attr('href')
             })
-        }
-        if ($(messageSelector).length <= 2) {
-            $(closeAllSelector).messageClose();
-        }
-        $(this).closest(messageSelector).messageClose();
-    });
-    $(closeAllSelector).click(function(event) {
-        event.preventDefault();
-        $.ajax({
-            url: $(this).attr('href')
-        })
-        $(this).messageClose();
-        $(messageSelector).messageClose();
+            $(closeAllSelectorDiv).messageClose();
+            $(messageSelector).messageClose();
+        });
+
+        {% for message in messages %}
+            {% if message.close_timeout %}
+                $('#message-{{ message.pk }}').messageCloseTimeout({{ message.close_timeout }});
+            {% endif %}
+        {% endfor %}
     });
 
-    {% for message in messages %}
-    {% if message.close_timeout %}
-    $('#message-{{ message.pk }}').messageCloseTimeout({{ message.close_timeout }});
-    {% endif %}
-    {% endfor %}
-});
+    function newMessage(data) {
+        console.log(data);
+        var div = $("#message-__PK__").clone().css('display', 'block');
+        var container = $("#messages-container");
 
-//]]>
+        $(div).attr("id", "message-" + data.pk)
+        $(div).find("#subject").text(data.subject);
+        $(div).find("#message").text(data.message);
+
+        state_tag = icon_tag = data.level;
+        if (data.level == 'error')
+            icon_tag = "circle-close";
+        if (data.level == 'info')
+            state_tag = 'highlight'
+
+        $(div).find(".ui-icon").attr("class", "ui-icon ui-icon-" + icon_tag);
+        $(div).find(".ui-corner-all").attr("class", "ui-corner-all ui-state-" + state_tag);
+
+        var close = $(div).find("a");
+        var close_href = close.attr("href");
+        close.attr("href", close_href.replace("1337", data.pk));
+
+        if (data.pk == -1)
+            close.remove();
+
+        container.append(div);
+
+        if ($(messageSelector).length == 3) {
+            $(closeAllSelectorDiv).messageOpen();
+        }
+    }
+
+    //]]>
 </script>
-{% with 1 as jquery %}
-{% include "persistent_messages/message/includes/messages.html" %}
-{% endwith %}
-{% endif %}
+{% include "persistent_messages/message/includes/messages.html" with jquery=1 close_all=1 %}
+<script type="text/javascript">
+
+
+    if (!!window.EventSource) {
+
+        var source = new EventSource('{% url "persistent-messages-sse" user.username %}');
+
+        source.addEventListener('message', function (e) {
+            newMessage($.parseJSON(e.data));
+        }, false);
+
+        source.addEventListener('open', function (e) {
+            // Connection was opened.
+            console.log("OPENED");
+        }, false);
+
+        source.addEventListener('error', function (e) {
+            if (e.readyState == EventSource.CLOSED) {
+                // Connection was closed.
+                console.log('connection closed');
+            }
+            console.log('error');
+        }, false);
+
+
+    } else {
+
+        function waitForMsg() {
+            /* This requests the url "msgsrv.php"
+             When it complete (or errors)*/
+            $.ajax({
+                type: "GET",
+                url: "../sse/foo",
+
+                async: true, /* If set to non-async, browser shows page as "Loading.."*/
+                cache: false,
+                timeout: 50000, /* Timeout in ms */
+
+                success: function (data) { /* called when request to barge.php completes */
+                    console.log(data);
+                    /* Add response to a .msg div (with the "new" class)*/
+                    setTimeout(
+                            waitForMsg, /* Request next message */
+                            1000 /* ..after 1 seconds */
+                    );
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("error", textStatus + " (" + errorThrown + ")");
+                    setTimeout(
+                            waitForMsg, /* Try again after.. */
+                            15000);
+                    /* milliseconds (15seconds) */
+                }
+            });
+        };
+
+        $(document).ready(function () {
+            waitForMsg();
+            /* Start the inital request */
+        });
+
+
+    }
+
+</script>
+{% include "persistent_messages/message/includes/sse_template.html" %}

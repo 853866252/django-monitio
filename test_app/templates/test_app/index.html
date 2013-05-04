@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>There are comments in page source!</title>
+
+    <!-- jquery from CDN and CSS for it -->
+    <script type="text/javascript"
+            src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
 </head>
 <body>
-123, check.
+
+<!-- include "persistent_messages/message/includes/messages.jquery.html" -->
+{% include "persistent_messages/message/includes/messages.jquery.html" %}
+
 </body>
 </html>

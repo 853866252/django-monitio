@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
+        'NAME': 'db.sqlite',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -120,10 +120,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admin',
 
     'persistent_messages',
     'test_app'
@@ -157,3 +154,15 @@ LOGGING = {
         },
     }
 }
+
+
+# django-persistent-messages
+MESSAGE_STORAGE = 'persistent_messages.storage.PersistentMessageStorage'
+PERSISTENT_MESSAGES_EXCLUDE_READ = True
+
+# django-sse
+REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
+    'location': '127.0.0.1:6379',
+    'db': 0,
+}
+

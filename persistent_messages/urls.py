@@ -1,6 +1,8 @@
 from django.conf.urls.defaults import *
+from persistent_messages.views import SameUserChannelRedisQueueView
 
-urlpatterns = patterns('persistent_messages.views',
+urlpatterns = patterns(
+    'persistent_messages.views',
     url(r'^detail/(?P<message_id>\d+)/$', 'message_detail',
         name='message_detail'),
 
@@ -14,4 +16,8 @@ urlpatterns = patterns('persistent_messages.views',
     url(r'^delete/message/(?P<message_id>\d+)/$', 'message_delete',
         name='message_delete'),
     url(r'^delete/all/$', 'message_delete_all', name='message_delete_all'),
+
+    # SSE
+    url(r'^sse/(?P<channel>\w+)?$',
+        SameUserChannelRedisQueueView.as_view(), name="persistent-messages-sse"),
 )

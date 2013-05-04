@@ -85,11 +85,11 @@ class Message(models.Model):
             read_tag = "unread"
 
         if extra_tags and label_tag:
-            return u' '.join([extra_tags, label_tag, read_tag])
+            return [extra_tags, label_tag, read_tag]
         elif extra_tags:
-            return u' '.join([extra_tags, read_tag])
+            return [extra_tags, read_tag]
         elif label_tag:
-            return u' '.join([label_tag, read_tag])
+            return [label_tag, read_tag]
         return read_tag
 
     tags = property(_get_tags)

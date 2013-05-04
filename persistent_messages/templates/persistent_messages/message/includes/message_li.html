@@ -1,14 +1,26 @@
 {% load i18n %}
-    <li id="message-{{ message.pk }}" {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-        {% if message.subject %}<strong>{{ message.subject }}</strong><br />{% endif %}
-        {% if message.is_persistent or jquery %}
-            {% with 32 as max_words %}
-            {{ message.message|truncatewords:max_words }}{% if message.message != message.message|truncatewords:max_words %} <a class="message-more" href="{% if message.is_persistent %}{% url message_detail message.pk %}{% else %}#{% endif %}">more</a>{% endif %}<br />
-            {% endwith %}
-        {% else %}
+<div id="message-{{ message.pk }}" class="ui-widget message">
+    <div class="ui-corner-all
+    {% if "info" in message.tags %}
+    ui-state-highlight
+    {% else %}
+    {% for tag in message.tags %}
+    ui-state-{{ tag }}
+    {% endfor %}
+    {% endif %}"
+         style="margin-top: 5px; padding: 0 .8em;">
+        <span class="ui-icon
+        {% for tag in message.tags %}
+        ui-icon-{% if tag == "error" %}circle-close{% else %}{{ tag }}{% endif %}
+        {% endfor %}"
+          style="float: left; margin-right: .7em; margin-top: .15em;"></span>
+
+            {% if message.subject %}<strong>{{ message.subject }}:</strong>{% endif %}
+
             {{ message }}
-        {% endif %}
-        {% if message.is_persistent or jquery %}
-            <a class="message-close icon" href="{% if message.is_persistent %}{% url message_mark_read message.pk %}{% else %}#{% endif %}"><span>{% trans "close" %}</span></a>
-        {% endif %}
-    </li>
+
+            {% if message.is_persistent or jquery %}
+                <a class="message-close icon" href="{% if message.is_persistent %}{% url "message_mark_read" message.pk %}{% else %}#{% endif %}"><span>{% trans "close" %}</span></a>
+            {% endif %}
+    </div>
+</div>

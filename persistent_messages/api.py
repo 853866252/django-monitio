@@ -44,11 +44,11 @@ def debug(request, message, extra_tags='', fail_silently=False, subject='',
                        subject, user, email, from_user, expires, close_timeout)
 
 
-def add_message_without_storage(to_user, from_user, level, message,
-                                extra_tags='', fail_silently=False, subject='',
-                                mail=False, expires=None, close_timeout=None):
+def create_message(to_user, from_user, level, message,
+                   extra_tags='', fail_silently=False, subject='',
+                   mail=False, expires=None, close_timeout=None):
     """
-    Use this method to add message without having to pass a `request.storage`
+    Use this method to create message directly in the database.
     """
     from models import Message
 

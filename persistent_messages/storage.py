@@ -46,7 +46,7 @@ class PersistentMessageStorage(FallbackStorage):
         # If the function didn't get an exclude_read argument, we look for it in settings
         if exclude_read is None:
             # By default read messages are not excluded, we show all messages
-            exclude_read = getattr(settings, 'EXCLUDE_READ', False)
+            exclude_read = getattr(settings, 'PERSISTENT_MESSAGES_EXCLUDE_READ', False)
 
         if exclude_read:
             qs = qs.exclude(read=True)
