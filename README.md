@@ -11,6 +11,7 @@ To achieve this, monitio uses:
 
 * [django-sse](https://github.com/niwibe/django-sse)
  * which uses [django-redis](https://github.com/niwibe/django-redis)
+ * and [Redis database](https://redis.io)
 * [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
 
 
