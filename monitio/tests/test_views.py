@@ -5,8 +5,8 @@ from django.http import Http404
 
 from django.test import TestCase, RequestFactory
 from django_dynamic_fixture import G
-from persistent_messages.models import Message
-from persistent_messages.views import message_detail, message_delete, message_delete_all, message_mark_read, message_mark_all_read, DynamicChannelRedisQueueView, SameUserChannelRedisQueueView
+from monitio.models import Message
+from monitio.views import message_detail, message_delete, message_delete_all, message_mark_read, message_mark_all_read, DynamicChannelRedisQueueView, SameUserChannelRedisQueueView
 
 
 User = get_user_model()
@@ -176,20 +176,3 @@ class TestViews(TestCase):
 
         finally:
             DynamicChannelRedisQueueView.dispatch = backup
-
-
-        # class SameUserChannelRedisQueueView(DynamicChannelRedisQueueView):
-        #     redis_channel = SSE_ANONYMOUS
-        #
-        #     @method_decorator(csrf_exempt)
-        #     def dispatch(self, request, *args, **kwargs):
-        #         print "X" * 90
-        #         print request.user.is_anonymous()
-        #         print self.get_redis_channel()
-        #
-        #         pass_anon = request.user.is_anonymous() and self.get_redis_channel() == SSE_ANONYMOUS
-        #         pass_logged_in = request.user.username == self.get_redis_channel()
-        #         if pass_anon or pass_logged_in:
-        #             return DynamicChannelRedisQueueView.dispatch(self, request, *args, **kwargs)
-        #         return HttpResponseForbidden()
-        #

@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 from django.contrib.auth.models import User
 
-from persistent_messages import api
+from monitio import api
 
 
 def err(msg, status=-1):

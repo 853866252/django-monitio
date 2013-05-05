@@ -2,9 +2,9 @@
 
 from django.core.management import BaseCommand
 from django.contrib.auth import get_user_model
-from persistent_messages import constants
-from persistent_messages.notify import sse
-from persistent_messages.views import SSE_ANONYMOUS
+from monitio import constants
+from monitio.notify import sse
+from monitio.views import SSE_ANONYMOUS
 
 
 class Command(BaseCommand):

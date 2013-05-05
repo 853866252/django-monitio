@@ -5,9 +5,9 @@ from django.contrib.auth.models import AnonymousUser
 
 from django.test import TestCase
 from django_dynamic_fixture import G, N
-from persistent_messages import INFO
-from persistent_messages.models import Message
-from persistent_messages.storage import get_user, PersistentMessageStorage
+from monitio import INFO
+from monitio.models import Message
+from monitio.storage import get_user, PersistentMessageStorage
 
 
 class TestStorage(TestCase):
