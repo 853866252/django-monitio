@@ -1,0 +1,10 @@
+TESTS
+
+Detect EVENTSOURCE in older browsers
+
+Tag to delete non-anonymous comments for a given user from a web page, that contain a link to web page. Use case:
+- "Hi, this is message X, please click here to read the report"
+- user clicks
+- message is CLOSED (or marked as read)
+
+Celery task to remove messages, that are read for more than 48 hrs

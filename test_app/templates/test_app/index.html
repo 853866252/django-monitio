@@ -9,8 +9,29 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 
+ <script language="text/javascript">
+
+    if (!!window.EventSource) {
+    }  else {
+        $("head").append($("<script/>").src("{{ STATIC_URL }}persistent_messages/eventsource.js"));
+    }
+
+</script>
 </head>
+
 <body>
+Hi. Thank you for testing this software. Now, go to the command prompt and
+run:
+<pre>
+    $ manage.py send_message [from user] [to user] [message]
+</pre>
+-- to create a persistent message, that will be displayed, when you refresh this page
+<p />
+... or, for the cool stuff to happen:
+<pre>
+   $ manage.py sse_test
+</pre>
+-- to send dynamic notifications to any user (including anonymous)
 
 <!-- include "persistent_messages/message/includes/messages.jquery.html" -->
 {% include "persistent_messages/message/includes/messages.jquery.html" %}

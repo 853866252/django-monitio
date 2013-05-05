@@ -95,67 +95,24 @@
 {% include "persistent_messages/message/includes/messages.html" with jquery=1 close_all=1 %}
 <script type="text/javascript">
 
+    var source = new EventSource('{% url "persistent-messages-sse" user.username %}');
 
-    if (!!window.EventSource) {
+    source.addEventListener('message', function (e) {
+        newMessage($.parseJSON(e.data));
+    }, false);
 
-        var source = new EventSource('{% url "persistent-messages-sse" user.username %}');
+    source.addEventListener('open', function (e) {
+        // Connection was opened.
+        console.log("OPENED");
+    }, false);
 
-        source.addEventListener('message', function (e) {
-            newMessage($.parseJSON(e.data));
-        }, false);
-
-        source.addEventListener('open', function (e) {
-            // Connection was opened.
-            console.log("OPENED");
-        }, false);
-
-        source.addEventListener('error', function (e) {
-            if (e.readyState == EventSource.CLOSED) {
-                // Connection was closed.
-                console.log('connection closed');
-            }
-            console.log('error');
-        }, false);
-
-
-    } else {
-
-        function waitForMsg() {
-            /* This requests the url "msgsrv.php"
-             When it complete (or errors)*/
-            $.ajax({
-                type: "GET",
-                url: "../sse/foo",
-
-                async: true, /* If set to non-async, browser shows page as "Loading.."*/
-                cache: false,
-                timeout: 50000, /* Timeout in ms */
-
-                success: function (data) { /* called when request to barge.php completes */
-                    console.log(data);
-                    /* Add response to a .msg div (with the "new" class)*/
-                    setTimeout(
-                            waitForMsg, /* Request next message */
-                            1000 /* ..after 1 seconds */
-                    );
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log("error", textStatus + " (" + errorThrown + ")");
-                    setTimeout(
-                            waitForMsg, /* Try again after.. */
-                            15000);
-                    /* milliseconds (15seconds) */
-                }
-            });
-        };
-
-        $(document).ready(function () {
-            waitForMsg();
-            /* Start the inital request */
-        });
-
-
-    }
+    source.addEventListener('error', function (e) {
+        if (e.readyState == EventSource.CLOSED) {
+            // Connection was closed.
+            console.log('connection closed');
+        }
+        console.log('error');
+    }, false);
 
 </script>
 {% include "persistent_messages/message/includes/sse_template.html" %}

@@ -82,19 +82,22 @@ def message_mark_all_read(request):
 
 class DynamicChannelRedisQueueView(RedisQueueView):
     def get_redis_channel(self):
-        return self.kwargs['channel'] or self.redis_channel
+        return self.kwargs.get('channel') or self.redis_channel
 
 
 class SameUserChannelRedisQueueView(DynamicChannelRedisQueueView):
+    """Named Redis pub/sub, that allows logged-in users to connect
+    with the same name, as their login.
+
+    Anonymous users are also allowed by default. """
+
     redis_channel = SSE_ANONYMOUS
+    allow_anonymous = True
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
-        print "X" * 90
-        print request.user.is_anonymous()
-        print self.get_redis_channel()
-
-        pass_anon = request.user.is_anonymous() and self.get_redis_channel() == SSE_ANONYMOUS
+        self.kwargs = kwargs # needed for get_redis_channel
+        pass_anon = request.user.is_anonymous() and self.get_redis_channel() == SSE_ANONYMOUS and self.allow_anonymous
         pass_logged_in = request.user.username == self.get_redis_channel()
         if pass_anon or pass_logged_in:
             return DynamicChannelRedisQueueView.dispatch(self, request, *args, **kwargs)
