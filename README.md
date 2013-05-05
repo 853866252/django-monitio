@@ -9,8 +9,9 @@ Monitio allows you to have messages (aka notifications), that:
 
 To achieve this, monitio uses:
 
-
-* `django-sse`
+* [django-sse](https://github.com/niwibe/django-sse)
+ * which uses [django-redis](https://github.com/niwibe/django-redis)
+* [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
 
 
 Long explanation
