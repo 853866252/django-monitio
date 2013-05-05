@@ -1,7 +1,13 @@
+I fix a bug:
+    => open some messages
+    => click 'close all'
+    => try sending some more messages
+    => there will be a bug on JS console
+
 I add a functionality:
     => to enable or disable notifications via e-mail and via sse
         .. using signals
-        .. persistent_messages.notify_email.enable() in urls.py
+        .. monitio.notify_email.enable() in urls.py
 
     => notification runs:
         .. after transaction is commited
@@ -11,6 +17,8 @@ I create selenium integration tests for the above notifications
 
 I add a fallback eventsource to poly-fill missing EventSource in older browsers:
     => via jquery eventsource
+    => ... and this does not work too good
+    =>
 
 I add a functionality, which is a django template tag to delete non-anonymous
 comments for a given user from a web page, that contain a link to web page. Use

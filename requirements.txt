@@ -1,5 +1,5 @@
 django
-django-sse
+django-socketio
 
 # test-requirements
 django-dynamic-fixture

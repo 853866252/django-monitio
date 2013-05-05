@@ -1,5 +1,4 @@
-<script type="text/javascript">
-    //<![CDATA[
+<script>
 
     var messageSelector = '.message';
     var closeSelector = '.message-close';
@@ -11,7 +10,7 @@
         $.fn.messageOpen = function () {
             $(this).show('fast');
         };
-        $.fn.messageClose = function () {
+        $.fn.messageClose = function (remove) {
             $(this).fadeTo('fast', 0, function () {
                 $(this).hide('fast', function () {
                     $(this).remove();
@@ -56,63 +55,62 @@
                 $('#message-{{ message.pk }}').messageCloseTimeout({{ message.close_timeout }});
             {% endif %}
         {% endfor %}
+
+        function newMessage(data) {
+            //console.log(data);
+            var div = $("#message-__PK__").clone().css('display', 'block');
+            var container = $("#messages-container");
+
+            $(div).attr("id", "message-" + data.pk)
+            $(div).find("#subject").text(data.subject);
+            $(div).find("#message").text(data.message);
+
+            state_tag = icon_tag = data.level;
+            if (data.level == 'error')
+                icon_tag = "circle-close";
+            if (data.level == 'info')
+                state_tag = 'highlight'
+
+            $(div).find(".ui-icon").attr("class", "ui-icon ui-icon-" + icon_tag);
+            $(div).find(".ui-corner-all").attr("class", "ui-corner-all ui-state-" + state_tag);
+
+            var close = $(div).find("a");
+            var close_href = close.attr("href");
+            close.attr("href", close_href.replace("1337", data.pk));
+
+            if (data.pk == -1)
+                close.remove();
+
+            container.append(div);
+
+            if ($(messageSelector).length == 3) {
+                $(closeAllSelectorDiv).messageOpen();
+            }
+        }
+
+        var source = new EventSource('{% url "persistent-messages-sse" user.username %}');
+
+        source.addEventListener('message', function (e) {
+            newMessage($.parseJSON(e.data));
+        });
+
+
+{##}
+{#        source.addEventListener('open', function (e) {#}
+{#            // Connection was opened.#}
+{#            console.log("OPENED");#}
+{#        }, false);#}
+{##}
+{#        source.addEventListener('error', function (e) {#}
+{#            if (e.readyState == EventSource.CLOSED) {#}
+{#                // Connection was closed.#}
+{#                //console.log('connection closed');#}
+{#            }#}
+{#            //console.log('error');#}
+{#        }, false);#}
+
     });
 
-    function newMessage(data) {
-        console.log(data);
-        var div = $("#message-__PK__").clone().css('display', 'block');
-        var container = $("#messages-container");
-
-        $(div).attr("id", "message-" + data.pk)
-        $(div).find("#subject").text(data.subject);
-        $(div).find("#message").text(data.message);
-
-        state_tag = icon_tag = data.level;
-        if (data.level == 'error')
-            icon_tag = "circle-close";
-        if (data.level == 'info')
-            state_tag = 'highlight'
-
-        $(div).find(".ui-icon").attr("class", "ui-icon ui-icon-" + icon_tag);
-        $(div).find(".ui-corner-all").attr("class", "ui-corner-all ui-state-" + state_tag);
-
-        var close = $(div).find("a");
-        var close_href = close.attr("href");
-        close.attr("href", close_href.replace("1337", data.pk));
-
-        if (data.pk == -1)
-            close.remove();
-
-        container.append(div);
-
-        if ($(messageSelector).length == 3) {
-            $(closeAllSelectorDiv).messageOpen();
-        }
-    }
-
-    //]]>
 </script>
 {% include "monitio/message/includes/messages.html" with jquery=1 close_all=1 %}
-<script type="text/javascript">
-
-    var source = new EventSource('{% url "persistent-messages-sse" user.username %}');
-
-    source.addEventListener('message', function (e) {
-        newMessage($.parseJSON(e.data));
-    }, false);
-
-    source.addEventListener('open', function (e) {
-        // Connection was opened.
-        console.log("OPENED");
-    }, false);
-
-    source.addEventListener('error', function (e) {
-        if (e.readyState == EventSource.CLOSED) {
-            // Connection was closed.
-            console.log('connection closed');
-        }
-        console.log('error');
-    }, false);
-
-</script>
 {% include "monitio/message/includes/sse_template.html" %}

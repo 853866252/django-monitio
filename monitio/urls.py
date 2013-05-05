@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
-from monitio.views import SameUserChannelRedisQueueView
+from django_longpolling.redis_views import BaseRedisPubSubView
+from monitio.views import SameUserChannelRedisQueueView, SSE_ANONYMOUS
 
 urlpatterns = patterns(
     'monitio.views',
@@ -17,7 +18,9 @@ urlpatterns = patterns(
         name='message_delete'),
     url(r'^delete/all/$', 'message_delete_all', name='message_delete_all'),
 
-    # SSE
+    # django-sse
     url(r'^sse/(?P<channel>\w+)?$',
         SameUserChannelRedisQueueView.as_view(), name="persistent-messages-sse"),
+
+
 )

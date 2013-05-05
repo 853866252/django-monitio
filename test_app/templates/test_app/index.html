@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>There are comments in page source!</title>
+    <title>django-monitio demo</title>
 
     <!-- jquery from CDN and CSS for it -->
     <script type="text/javascript"
             src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet"
+          href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
 
- <script language="text/javascript">
-
-    if (!!window.EventSource) {
-    }  else {
-        $("head").append($("<script/>").src("{{ STATIC_URL }}persistent_messages/eventsource.js"));
-    }
-
-</script>
+    {% include "monitio/header.html" %}
 </head>
 
 <body>
@@ -25,16 +19,16 @@ run:
 <pre>
     $ manage.py send_message [from user] [to user] [message]
 </pre>
--- to create a persistent message, that will be displayed, when you refresh this page
-<p />
+-- to create a persistent message, that will be displayed, when you refresh this
+page
+<p/>
 ... or, for the cool stuff to happen:
 <pre>
    $ manage.py sse_test
 </pre>
 -- to send dynamic notifications to any user (including anonymous)
 
-<!-- include "persistent_messages/message/includes/messages.jquery.html" -->
-{% include "persistent_messages/message/includes/messages.jquery.html" %}
+{% include "monitio/message/includes/messages.jquery.html" %}
 
 </body>
 </html>

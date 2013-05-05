@@ -12,6 +12,9 @@ Monitio is built upon:
 * [django-sse](https://github.com/niwibe/django-sse)
  * which uses [django-redis](https://github.com/niwibe/django-redis)
  * ... and [Redis database](https://redis.io)
+* [Yaffle's EventSource.js](https://github.com/Yaffle/EventSource) for cross-browser Server-Sent Events compatibility
+* [django-cors-headers](https://github.com/ottoyiu/django-cors-headers) for the same thing
+
 * [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
 
 
@@ -84,9 +87,9 @@ This document assumes that you are familiar with Python and Django.
             ...
         )
 
-6. In your settings, set the message [storage backend](http://docs.djangoproject.com/en/dev/ref/contrib/messages/#message-storage-backends) to `persistent_messages.storage.PersistentMessageStorage`:
+6. In your settings, set the message [storage backend](http://docs.djangoproject.com/en/dev/ref/contrib/messages/#message-storage-backends) to `monitio.storage.PersistentMessageStorage`:
 
-        MESSAGE_STORAGE = 'persistent_messages.storage.PersistentMessageStorage'
+        MESSAGE_STORAGE = 'monitio.storage.PersistentMessageStorage'
 
 7. Set up the database tables using 
 
@@ -107,12 +110,12 @@ Using messages in views and templates
 
 Django's messages framework provides a number of [message levels](http://docs.djangoproject.com/en/dev/ref/contrib/messages/#message-levels) for various purposes such as success messages, warnings etc. 
 
-    import persistent_messages
+    import monitio
     # persistent message levels:
-    persistent_messages.INFO 
-    persistent_messages.SUCCESS 
-    persistent_messages.WARNING
-    persistent_messages.ERROR
+    monitio.INFO
+    monitio.SUCCESS
+    monitio.WARNING
+    monitio.ERROR
     
 This app provides constants with the same names, the difference being that messages with these levels are going to be persistent:
 
@@ -123,7 +126,7 @@ This app provides constants with the same names, the difference being that messa
     messages.WARNING
     messages.ERROR
 
-**Note**: Let's stress the importance of this. If you use `persistent_messages` constants the message will be stored in the database and kept there till somebody explicitly deletes it. If you use `contrib.messages` constants, you get the same behavior as if you were using a non persistent storage, messages are stored in the database ensuring reception but they are removed right after being accessed.
+**Note**: Let's stress the importance of this. If you use `monitio` constants the message will be stored in the database and kept there till somebody explicitly deletes it. If you use `contrib.messages` constants, you get the same behavior as if you were using a non persistent storage, messages are stored in the database ensuring reception but they are removed right after being accessed.
 
 ### Adding a message ###
 
@@ -132,19 +135,19 @@ Since the app is implemented as a [storage backend](http://docs.djangoproject.co
     from django.contrib import messages
     messages.add_message(request, messages.INFO, 'Hello world.')
 
-This is compatible and equivalent to using the API provided by `persistent_messages`:
+This is compatible and equivalent to using the API provided by `monitio`:
 
-    import persistent_messages
+    import monitio
     from django.contrib import messages
-    persistent_messages.add_message(request, messages.INFO, 'Hello world.')
+    monitio.add_message(request, messages.INFO, 'Hello world.')
 
-In order to add a persistent message (one that is stored permanently in the Database), use `persistent_messages` levels listed above:
+In order to add a persistent message (one that is stored permanently in the Database), use `monitio` levels listed above:
 
-    messages.add_message(request, persistent_messages.WARNING, 'This message is stored in persistent_messages table till removed.')
+    messages.add_message(request, monitio.WARNING, 'This message is stored in monitio table till removed.')
 
 or the equivalent:
 
-    persistent_messages.add_message(request, persistent_messages.WARNING, 'This message is stored in persistent_messages table till removed')
+    monitio.add_message(request, monitio.WARNING, 'This message is stored in monitio table till removed')
     
 Note that this is only possible for logged-in users, so you are probably going to have make sure that the current user is not anonymous using `request.user.is_authenticated()`. Adding a persistent message for anonymous users raises a `NotImplementedError`.
 
@@ -160,9 +163,9 @@ This is the prototype of `add_message` in Persistent Messages.
 
 #### Subject and email notifications ####
 
-Using `persistent_messages.add_message`, you can also add a subject line to the message. You can also set if you want an email notification to be sent. The following message will be stored as a message in the database and also sent to the email address associated with the current user:
+Using `monitio.add_message`, you can also add a subject line to the message. You can also set if you want an email notification to be sent. The following message will be stored as a message in the database and also sent to the email address associated with the current user:
 
-    persistent_messages.add_message(request, persistent_messages.INFO, 'Message body', subject='Please read me', email=True)
+    monitio.add_message(request, monitio.INFO, 'Message body', subject='Please read me', email=True)
 
 **Note!** Email notifications at the moment are too simple, I don't recommend using them, I'm not.
 
@@ -172,7 +175,7 @@ You can also pass this function a `User` object if the message is supposed to be
 
     from django.contrib.auth.models import User
     sally = User.objects.get(username='Sally')
-    persistent_messages.add_message(request, persistent_messages.SUCCESS, 'Hi Sally, here is a message to you.', subject='Success message', user=sally)
+    monitio.add_message(request, monitio.SUCCESS, 'Hi Sally, here is a message to you.', subject='Success message', user=sally)
     
 You can also set a `from_user`, which lets you use Persistent Messages as messaging system between users.
 
@@ -198,7 +201,7 @@ Messages can be displayed [as described in the Django manual](http://docs.django
 
 You can also use the bundled templates instead. The following line replaces the code above. It allows the user to remove messages and mark them as read using Ajax requests, provided your HTML page includes JQuery:
 
-    {% include "persistent_messages/message/includes/messages.jquery.html" %}
+    {% include "monitio/message/includes/messages.jquery.html" %}
 
 ### Storage extra methods ###
 
@@ -235,7 +238,7 @@ Imagine you've created an inbox for your users using Persistent Messages and you
 
 As said before you can import Persistent Messages URLs in your project's URL conf. This are the named urls you get:
 
-* `{% url message_detail message_id %}` This renders template `persistent_messages/message/detail.html` with specific message in the context as `message`.
+* `{% url message_detail message_id %}` This renders template `monitio/message/detail.html` with specific message in the context as `message`.
 * `{% url message_mark_read message_id %}` Marks specific message as read
 * `{% url message_mark_all_read %}` Marks all messages of the currently logged in user as read
 * `{% url message_delete message_id %}` Deletes specific message

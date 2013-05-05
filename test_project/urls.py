@@ -15,4 +15,5 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', TestView.as_view()),
     url(r'^messages/', include('monitio.urls')),
+    url("", include('django_socketio.urls')),
 )
