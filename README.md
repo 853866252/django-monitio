@@ -1,6 +1,9 @@
 Monitio for Django
 ==================
 
+Monitio allows you to have:
+* persistent messages (aka notifications) 
+ 
 There are situations in Django, when you want to perform a task in background,
 via Celery or something similar, then you want to inform the user about it.
 
