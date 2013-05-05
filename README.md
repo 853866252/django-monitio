@@ -13,6 +13,7 @@ Monitio is built upon:
  * which uses [django-redis](https://github.com/niwibe/django-redis)
  * ... and [Redis database](https://redis.io)
 * [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
+* [jQuery](http://jquery.com/) and [jQueryUI](http://jqueryui.com)
 
 
 Long explanation
