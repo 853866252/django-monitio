@@ -1,15 +1,20 @@
 Monitio for Django
 ==================
 
-Monitio allows you to have:
+Monitio allows you to have messages (aka notifications), that:
 
-* persistent messages (aka notifications) 
+* can be persisted (stored in the database and read later),
+* which dynamically show on the web UI when added,
+* and can be optionally sent via e-mail to your end-user.
 
-* Item 1
-* Item 2
-  * Item 2a
-  * Item 2b
- 
+To achieve this, monitio uses:
+
+
+* `django-sse`
+
+
+Long explanation
+----------------
 There are situations in Django, when you want to perform a task in background,
 via Celery or something similar, then you want to inform the user about it.
 
@@ -232,8 +237,6 @@ As said before you can import Persistent Messages URLs in your project's URL con
 
 There is plenty of room for improvement in these views and urls.
 
-### RANDOM NOTES ###
+### AUTHORS ###
 
-[philomat](https://github.com/philomat) is the author of this application. I maintain my own fork of the project, as the author didn't look to be very interested in maintaining it, as you can see in [this pull request](https://github.com/philomat/django-persistent-messages/pull/2).
-
-* This application is in need of a testing suite, currently testing checks the sadly famous "2+2=4"
+[philomat](https://github.com/philomat) is the author of original code for [django-persistent-messages](https://github.com/philomat/django-persistent-messages), which was then forked by [maurojp](https://github.com/maurojp).
