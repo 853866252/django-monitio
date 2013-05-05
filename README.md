@@ -7,11 +7,11 @@ Monitio allows you to have messages (aka notifications), that:
 * which dynamically show on the web UI when added,
 * and can be optionally sent via e-mail to your end-user.
 
-To achieve this, monitio uses:
+Monitio is built upon:
 
 * [django-sse](https://github.com/niwibe/django-sse)
  * which uses [django-redis](https://github.com/niwibe/django-redis)
- * and [Redis database](https://redis.io)
+ * ... and [Redis database](https://redis.io)
 * [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
 
 
@@ -21,12 +21,16 @@ There are situations in Django, when you want to perform a task in background,
 via Celery or something similar, then you want to inform the user about it.
 
 The process may be just a few seconds long and the user may have not yet
-closed the browser window or changed the web page. Or, the process may take much
-time. The user may already have closed the browser window, right? So let's
-inform the user after he/she logs in again. And, let's have an option to give
+closed the browser window or changed the web page. 
+
+Or, the process may take much more time. 
+
+The user may already have closed the browser window, right? 
+
+So let's inform the user after he/she logs in again. And, let's have an option to give
 him or her some information over e-mail. That would be cool.
 
-On the other ha
+On the other hand, what if the user waits patiently, staring at the browser window? Let's give him or her a dynamic pop-up with a message. Let's do that in a cool way, using HTML5's [SSE](http://en.wikipedia.org/wiki/Server-sent_events)
 
 This project is an attept to be a definitive turnkey solution for such situations.
 It is built on [maurojp](https://github.com/maurojp) fork of django-persistent-messages by [philomat](https://github.com/philomat),
@@ -36,7 +40,7 @@ So, as a result of using this piece of software, you get dynamic, lightweight
 notifications for your end-users, INCLUDING anonymous users, with an option to
 leave persistent messages. And e-mail your peeps. Isn't that cool?
 
-Below goes original readme...
+Below goes original README.md, that needs updating. 
 
 Django Persistent Messages
 ==========================
@@ -56,14 +60,14 @@ This document assumes that you are familiar with Python and Django.
 
 1. Clone this git repository (no PyPI package for this fork). master branch is the lastest stable branch: 
 
-        $ git clone git://github.com/maraujop/django-persistent-messages.git
+        $ git clone git://github.com/mpasternak/django-monitio.git
 
-2. Make sure `persistent_messages` is in your `PYTHONPATH`.
-3. Add `persistent_messages` to your `INSTALLED_APPS` setting.
+2. Make sure `monitio` is in your `PYTHONPATH`.
+3. Add `monitio` to your `INSTALLED_APPS` setting.
 
         INSTALLED_APPS = (
             ...
-            'persistent_messages',
+            'monitio',
         )
 
 4. Make sure Django's `MessageMiddleware` is in your `MIDDLEWARE_CLASSES` setting (which is the case by default):
@@ -73,10 +77,10 @@ This document assumes that you are familiar with Python and Django.
             'django.contrib.messages.middleware.MessageMiddleware',
         )
  
-5. **Optional** Add the `persistent_messages` URLs to your URL conf. For instance, in order to make messages available under `http://domain.com/messages/`, add the following line to `urls.py`.
+5. Add the `monitio` URLs to your URL conf. For instance, in order to make messages available under `http://domain.com/messages/`, add the following line to `urls.py`.
 
         urlpatterns = patterns('',
-            (r'^messages/', include('persistent_messages.urls')),
+            (r'^messages/', include('monitio.urls')),
             ...
         )
 
@@ -92,7 +96,7 @@ This document assumes that you are familiar with Python and Django.
 
         TEMPLATE_DIRS = (
             ...
-            'path/to/persistent_messages/templates')
+            'path/to/monitio/templates')
         )
 
 
