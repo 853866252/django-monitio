@@ -14,9 +14,10 @@ Monitio is built upon:
  * ... and [Redis database](https://redis.io)
 * [Yaffle's EventSource.js](https://github.com/Yaffle/EventSource) for cross-browser Server-Sent Events compatibility
 * [django-cors-headers](https://github.com/ottoyiu/django-cors-headers) for the same thing
-
 * [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
 * [jQuery](http://jquery.com/) and [jQueryUI](http://jqueryui.com)
+
+With such sophisticated setup, using packages from many individuals, the demo application is currently properly running on MSIE 10, Opera 12, FFox 16 and Safari 5.1.7 on Windows. 
 
 
 Long explanation
