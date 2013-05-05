@@ -16,6 +16,7 @@ Monitio is built upon:
 * [django-cors-headers](https://github.com/ottoyiu/django-cors-headers) for the same thing
 
 * [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
+* [jQuery](http://jquery.com/) and [jQueryUI](http://jqueryui.com)
 
 
 Long explanation
