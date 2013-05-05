@@ -5,16 +5,16 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name='django-persistent-messages',
+    name='django-monitio',
     version='0.1',
-    description='A Django app for unified and persistent user messages/notifications, built on top of Django\'s messages framework',
+    description='Unified, persistent and dynamic user messages/notifications for Django',
     long_description=read('README.md'),
-    author='philomat',
+    author='mpasternak',
     license='BSD',
-    url='http://github.com/philomat/django-persistent-messages',
-    keywords = ['messages', 'django', 'persistent',],
+    url='http://github.com/mpasternak/django-monitio',
+    keywords = ['messages', 'django', 'persistent', 'sse'],
     packages=find_packages(),
-    package_data={'persistent_messages': [
+    package_data={'monitio': [
         'templates/*/*/*.html',
         'templates/*/*/*/*.html']},
     classifiers=[

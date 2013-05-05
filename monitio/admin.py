@@ -1,4 +1,4 @@
-from monitio.models import Message
+from monitio.models import Monit
 from django.contrib import admin
 
 
@@ -7,4 +7,4 @@ class MessageAdmin(admin.ModelAdmin):
                     'created', 'read', 'is_persistent']
 
 
-admin.site.register(Message, MessageAdmin)
+admin.site.register(Monit, MessageAdmin)

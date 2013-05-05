@@ -14,5 +14,5 @@ urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', TestView.as_view()),
-    url(r'^messages/', include('persistent_messages.urls')),
+    url(r'^messages/', include('monitio.urls')),
 )

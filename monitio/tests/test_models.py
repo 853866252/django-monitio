@@ -1,28 +1,28 @@
 # -*- encoding: utf-8 -*-
 
 from django.test import TestCase
-from monitio import INFO
-from monitio.models import Message
+from monitio.constants import INFO
+from monitio.models import Monit
 
 
 class TestModels(TestCase):
     def test___unicode__(self):
-        m = Message(message='foo')
+        m = Monit(message='foo')
         self.assertEquals(unicode(m), u'foo')
 
-        m = Message(message='foo', subject='bar')
+        m = Monit(message='foo', subject='bar')
         self.assertEquals(unicode(m), u'bar: foo')
 
     def test__prepare_message(self):
-        m = Message(subject='foo', message='bar', extra_tags='baz')
+        m = Monit(subject='foo', message='bar', extra_tags='baz')
         m._prepare_message()
 
     def test_save(self):
-        m = Message(subject='foo', message='bar', extra_tags='baz', level=INFO)
+        m = Monit(subject='foo', message='bar', extra_tags='baz', level=INFO)
         m.save()
 
     def test__get_tags(self):
-        m = Message(extra_tags="foo", level=INFO)
+        m = Monit(extra_tags="foo", level=INFO)
         self.assertEquals(m._get_tags(), ['foo', 'info', 'unread'])
 
         m.read = True

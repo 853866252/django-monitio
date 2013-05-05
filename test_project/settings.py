@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
-    'persistent_messages',
+    'monitio',
     'test_app'
 )
 

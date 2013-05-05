@@ -6,7 +6,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django_dynamic_fixture import G, N
 from monitio import INFO
-from monitio.models import Message
+from monitio.models import Monit
 from monitio.storage import get_user, PersistentMessageStorage
 
 
@@ -20,8 +20,8 @@ class TestStorage(TestCase):
         self.storage = PersistentMessageStorage(request=req)
 
     def test__message_queryset(self):
-        m = G(Message, read=False, user=self.user, expires=None)
-        n = G(Message, read=False, user=self.user, expires=datetime.now() - timedelta(days=1))
+        m = G(Monit, read=False, user=self.user, expires=None)
+        n = G(Monit, read=False, user=self.user, expires=datetime.now() - timedelta(days=1))
         res = list(self.storage._message_queryset(True))
         self.assertIn(m, res)
         self.assertNotIn(n, res)
@@ -36,25 +36,25 @@ class TestStorage(TestCase):
         self.assertEquals(self.storage._get(), ([], True))
 
     def test__get(self):
-        m = G(Message, read=False, user=self.user, expires=None)
+        m = G(Monit, read=False, user=self.user, expires=None)
         self.assertEquals(self.storage._get(), ([m], True))
 
     def test_get_persistent(self):
-        m = G(Message, read=False, user=self.user, expires=None, level=INFO)
+        m = G(Monit, read=False, user=self.user, expires=None, level=INFO)
         self.assertIn(m, self.storage.get_persistent())
 
-        n = G(Message, read=False, user=self.user, expires=None, level=31337)
+        n = G(Monit, read=False, user=self.user, expires=None, level=31337)
         self.assertNotIn(n, self.storage.get_persistent())
 
     def test_get_persistent_unread(self):
-        m = G(Message, user=self.user, expires=None, level=INFO, read=False)
-        n = G(Message, user=self.user, expires=None, level=INFO, read=True)
+        m = G(Monit, user=self.user, expires=None, level=INFO, read=False)
+        n = G(Monit, user=self.user, expires=None, level=INFO, read=True)
 
         self.assertIn(m, self.storage.get_persistent_unread())
         self.assertNotIn(n, self.storage.get_persistent_unread())
 
     def test_get_nonpersistent(self):
-        n = G(Message, read=False, user=self.user, expires=None, level=31337)
+        n = G(Monit, read=False, user=self.user, expires=None, level=31337)
         self.assertIn(n, self.storage.get_nonpersistent())
 
     def test_counts(self):
@@ -63,29 +63,29 @@ class TestStorage(TestCase):
         self.assertEquals(0, self.storage.count_unread())
 
     def test__delete_non_persistent(self):
-        n = G(Message, read=False, user=self.user, expires=None, level=31337)
+        n = G(Monit, read=False, user=self.user, expires=None, level=31337)
         self.storage.get_nonpersistent()
         self.storage._delete_non_persistent()
-        self.assertEquals(Message.objects.count(), 0)
+        self.assertEquals(Monit.objects.count(), 0)
 
     def test___iter__(self):
-        m = G(Message, read=False, user=self.user, expires=None, level=INFO)
+        m = G(Monit, read=False, user=self.user, expires=None, level=INFO)
         self.storage._queued_messages = ['bar']
         self.assertEquals(list(self.storage), [m, 'bar'])
 
     def test__store(self):
-        m = N(Message, read=False, user=self.user, expires=None, level=INFO)
+        m = N(Monit, read=False, user=self.user, expires=None, level=INFO)
         self.assertEquals(m.is_persistent(), True)
-        self.assertEquals(Message.objects.count(), 0)
+        self.assertEquals(Monit.objects.count(), 0)
         self.storage._store([m], 'response')
-        self.assertEquals(Message.objects.count(), 1)
+        self.assertEquals(Monit.objects.count(), 1)
 
     def test_update(self):
         self.storage.update('response')
 
     def test_add(self):
         self.storage.add(INFO, 'test')
-        self.assertEquals(Message.objects.count(), 1)
+        self.assertEquals(Monit.objects.count(), 1)
 
 
 

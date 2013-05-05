@@ -5,7 +5,7 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.db.models import Q
 from django.conf import settings
 
-from monitio.models import Message
+from monitio.models import Monit
 from monitio.constants import PERSISTENT_MESSAGE_LEVELS
 
 
@@ -40,7 +40,7 @@ class PersistentMessageStorage(FallbackStorage):
         """
         Gets the messages from the model. If `exclude_unread` is set to True, read messages are excluded
         """
-        qs = Message.objects.filter(user=get_user(self.request)).filter(
+        qs = Monit.objects.filter(user=get_user(self.request)).filter(
             Q(expires=None) | Q(expires__gt=datetime.datetime.now()))
 
         # If the function didn't get an exclude_read argument, we look for it in settings
@@ -205,7 +205,7 @@ class PersistentMessageStorage(FallbackStorage):
         """
         to_user = user or get_user(self.request)
         if not to_user.is_authenticated():
-            if Message(level=level).is_persistent():
+            if Monit(level=level).is_persistent():
                 raise NotImplementedError(
                     'Persistent message levels cannot be used for anonymous users.')
             else:
@@ -220,7 +220,7 @@ class PersistentMessageStorage(FallbackStorage):
             return
 
         # Add the message
-        message = Message(user=to_user, level=level, message=message,
+        message = Monit(user=to_user, level=level, message=message,
                           extra_tags=extra_tags, subject=subject,
                           from_user=from_user, expires=expires,
                           close_timeout=close_timeout)

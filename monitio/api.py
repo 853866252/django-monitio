@@ -54,9 +54,9 @@ def create_message(to_user, from_user, level, message, extra_tags='',
     """
     Use this method to create message directly in the database.
     """
-    from monitio.models import Message
+    from monitio.models import Monit
 
-    return Message.objects.create(user=to_user, level=level, message=message,
+    return Monit.objects.create(user=to_user, level=level, message=message,
                                   extra_tags=extra_tags, subject=subject,
                                   from_user=from_user, expires=expires,
                                   close_timeout=close_timeout)

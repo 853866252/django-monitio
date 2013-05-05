@@ -1,20 +1,16 @@
-HELP ME DEVELOP THIS PROJECT, THIS IS COOL STUFF
-================================================
-
-TL,DR: this project does live AND persistent (at once!) notification sent to the
-user, who awaits completion of long-running background task. Just setup Redis on
-your localhost and run the test_project demo application.
-
-Longer version
---------------
+Monitio for Django
+==================
 
 There are situations in Django, when you want to perform a task in background,
-via Celery or something similar, then you want to inform the user about it. You
-can use `django-sse` to do that, for example.
+via Celery or something similar, then you want to inform the user about it.
 
-... but, if the process takes much time, the user may already have closed the
-browser window, right? So let's inform the user after he/she logs in again.
-And, let's give him or her some information over e-mail. That would be cool.
+The process may be just a few seconds long and the user may have not yet
+closed the browser window or changed the web page. Or, the process may take much
+time. The user may already have closed the browser window, right? So let's
+inform the user after he/she logs in again. And, let's have an option to give
+him or her some information over e-mail. That would be cool.
+
+On the other ha
 
 This project is an attept to be a definitive turnkey solution for such situations.
 It is built on [maurojp](https://github.com/maurojp) fork of django-persistent-messages by [philomat](https://github.com/philomat),

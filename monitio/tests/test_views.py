@@ -5,7 +5,7 @@ from django.http import Http404
 
 from django.test import TestCase, RequestFactory
 from django_dynamic_fixture import G
-from monitio.models import Message
+from monitio.models import Monit
 from monitio.views import message_detail, message_delete, message_delete_all, message_mark_read, message_mark_all_read, DynamicChannelRedisQueueView, SameUserChannelRedisQueueView
 
 
@@ -27,18 +27,18 @@ class TestViews(TestCase):
     def setUp(self):
         self.user = G(User)
         self.factory = UserRequestFactory(self.user)
-        self.message = G(Message, read=False, message='foo', user=self.user)
+        self.message = G(Monit, read=False, message='foo', user=self.user)
         self.request = self.factory.get("/")
 
     def reload(self):
-        self.message = Message.objects.get(pk=self.message.pk)
+        self.message = Monit.objects.get(pk=self.message.pk)
 
     def assertRead(self):
         self.reload()
         self.assertEquals(self.message.read, True)
 
     def assertDeleted(self):
-        self.assertEquals(Message.objects.count(), 0)
+        self.assertEquals(Monit.objects.count(), 0)
 
     def assertUnread(self):
         self.reload()
@@ -91,13 +91,13 @@ class TestViews(TestCase):
         self.assertPermissionDenied(message_delete_all)
 
     def test_message_delete_all(self):
-        extra = G(Message, user=G(User))
-        self.assertEquals(Message.objects.count(), 2)
+        extra = G(Monit, user=G(User))
+        self.assertEquals(Monit.objects.count(), 2)
 
         self.non_ajax_request()
         res = message_delete_all(self.request)
 
-        self.assertEquals(Message.objects.count(), 1)
+        self.assertEquals(Monit.objects.count(), 1)
         self.assertNonAjaxRequestOkay(res)
 
     def test_message_delete_all_ajax(self):
@@ -124,14 +124,14 @@ class TestViews(TestCase):
             message_mark_read(self.request, self.message.pk))
 
     def test_message_mark_all_read(self):
-        m1 = G(Message, user=G(User), read=False)
-        m2 = G(Message, user=self.user, read=False)
+        m1 = G(Monit, user=G(User), read=False)
+        m2 = G(Monit, user=self.user, read=False)
         self.assertUnread()
 
         res = message_mark_all_read(self.request)
         self.assertRead()
-        self.assertEquals(Message.objects.get(pk=m1.pk).read, False)
-        self.assertEquals(Message.objects.get(pk=m2.pk).read, True)
+        self.assertEquals(Monit.objects.get(pk=m1.pk).read, False)
+        self.assertEquals(Monit.objects.get(pk=m2.pk).read, True)
 
     def test_message_mark_all_read_non_ajax(self):
         self.non_ajax_request()

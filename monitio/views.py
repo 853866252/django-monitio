@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django_sse.redisqueue import RedisQueueView
 
-from monitio.models import Message
+from monitio.models import Monit
 from monitio.storage import get_user
 
 SSE_ANONYMOUS = "__anonymous__"
@@ -17,7 +17,7 @@ def message_detail(request, message_id):
     if not user.is_authenticated():
         raise PermissionDenied
 
-    message = get_object_or_404(Message, user=user, pk=message_id)
+    message = get_object_or_404(Monit, user=user, pk=message_id)
     message.read = True
     message.save()
 
@@ -31,7 +31,7 @@ def message_delete(request, message_id):
     if not user.is_authenticated():
         raise PermissionDenied
 
-    message = get_object_or_404(Message, user=user, pk=message_id)
+    message = get_object_or_404(Monit, user=user, pk=message_id)
     message.delete()
 
     if not request.is_ajax():
@@ -45,7 +45,7 @@ def message_delete_all(request):
     if not user.is_authenticated():
         raise PermissionDenied
 
-    Message.objects.filter(user=user).delete()
+    Monit.objects.filter(user=user).delete()
 
     if not request.is_ajax():
         return HttpResponseRedirect(request.META.get('HTTP_REFERER') or '/')
@@ -58,7 +58,7 @@ def message_mark_read(request, message_id):
     if not user.is_authenticated():
         raise PermissionDenied
 
-    message = get_object_or_404(Message, user=user, pk=message_id)
+    message = get_object_or_404(Monit, user=user, pk=message_id)
     message.read = True
     message.save()
 
@@ -73,7 +73,7 @@ def message_mark_all_read(request):
     if not user.is_authenticated():
         raise PermissionDenied
 
-    Message.objects.filter(user=user).update(read=True)
+    Monit.objects.filter(user=user).update(read=True)
     if not request.is_ajax():
         return HttpResponseRedirect(request.META.get('HTTP_REFERER') or '/')
     else:

@@ -12,7 +12,7 @@ from monitio.constants import PERSISTENT_MESSAGE_LEVELS
 LEVEL_TAGS = utils.get_level_tags()
 User = get_user_model()
 
-class Message(models.Model):
+class Monit(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
     from_user = models.ForeignKey(User, blank=True, null=True,
                                   related_name="from_user")
@@ -47,7 +47,7 @@ class Message(models.Model):
     is_persistent.boolean = True
 
     def __eq__(self, other):
-        return isinstance(other, Message) and self.level == other.level and \
+        return isinstance(other, Monit) and self.level == other.level and \
                self.message == other.message
 
     def __unicode__(self):
@@ -72,7 +72,7 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
         self._prepare_message()
-        super(Message, self).save(*args, **kwargs)
+        super(Monit, self).save(*args, **kwargs)
 
     def _get_tags(self):
         label_tag = force_unicode(LEVEL_TAGS.get(self.level, ''),
