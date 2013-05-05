@@ -2,7 +2,7 @@
 <div id="messages-container">
     {% for message in messages %}
         {% if not hide_persistent or not message.is_persistent %}
-            {% include "persistent_messages/message/includes/message_li.html" %}
+            {% include "monitio/message/includes/message_li.html" %}
         {% endif %}
     {% endfor %}
 </div>

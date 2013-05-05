@@ -92,7 +92,7 @@
 
     //]]>
 </script>
-{% include "persistent_messages/message/includes/messages.html" with jquery=1 close_all=1 %}
+{% include "monitio/message/includes/messages.html" with jquery=1 close_all=1 %}
 <script type="text/javascript">
 
     var source = new EventSource('{% url "persistent-messages-sse" user.username %}');
@@ -115,4 +115,4 @@
     }, false);
 
 </script>
-{% include "persistent_messages/message/includes/sse_template.html" %}
+{% include "monitio/message/includes/sse_template.html" %}
