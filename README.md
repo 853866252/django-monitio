@@ -267,4 +267,8 @@ There is plenty of room for improvement in these views and urls.
 
 ### AUTHORS ###
 
-[philomat](https://github.com/philomat) is the author of original code for [django-persistent-messages](https://github.com/philomat/django-persistent-messages), which was then forked by [maurojp](https://github.com/maurojp).
+[philomat](https://github.com/philomat) is the author of original code for [django-persistent-messages](https://github.com/philomat/django-persistent-messages), which was then forked by [maurojp](https://github.com/maurojp), then it was forked by [dotz](https://github.com/mpasternak)as
+
+
+
+
