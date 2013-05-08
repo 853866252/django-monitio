@@ -175,7 +175,5 @@ REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
 CORS_ORIGIN_WHITELIST = (
     '127.0.0.1',
     '127.0.0.1:8000',
-    'localhost:8000',
-    'localhost',
-    'http://localhost:8000/'
+
 )
