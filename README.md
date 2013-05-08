@@ -14,9 +14,10 @@ Monitio is built upon:
  * ... and [Redis database](https://redis.io)
 * [Yaffle's EventSource.js](https://github.com/Yaffle/EventSource) for cross-browser Server-Sent Events compatibility
 * [django-cors-headers](https://github.com/ottoyiu/django-cors-headers) for the same thing
-
 * [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
 * [jQuery](http://jquery.com/) and [jQueryUI](http://jqueryui.com)
+
+With such sophisticated setup, using packages from many individuals, the demo application is currently properly running on MSIE 10, Opera 12, FFox 16 and Safari 5.1.7 on Windows. 
 
 
 Long explanation
@@ -44,14 +45,12 @@ So, as a result of using this piece of software, you get dynamic, lightweight
 notifications for your end-users, INCLUDING anonymous users, with an option to
 leave persistent messages. And e-mail your peeps. Isn't that cool?
 
-Below goes original README.md, that needs updating. 
+Documentation
+-------------
 
-Django Persistent Messages
-==========================
+A Django app for unified, persistent and live user messages/notifications, built on top of Django's [messages framework](http://docs.djangoproject.com/en/dev/ref/contrib/messages/) (`django.contrib.messages`).
 
-A Django app for unified and persistent user messages/notifications, built on top of Django's [messages framework](http://docs.djangoproject.com/en/dev/ref/contrib/messages/) (`django.contrib.messages`).
-
-Persistent Messages is a messages storage backend that provides support for messages that are supposed to be persistent, that is, they outlast a browser session and will be stored in the database. These messages can be displayed as you will to the user, you can let the user mark them as read, remove them or even reply them. For some of these actions there are views you can import in your project urls.py.
+Monitio is a messages storage backend that provides support for messages that are supposed to be persistent, that is, they outlast a browser session and will be stored in the database. These messages can be displayed as you will to the user, you can let the user mark them as read, remove them or even reply them. For some of these actions there are views you can import in your project urls.py.
 
 * Support persistent and nonpersistent messages for authenticated users. Persistent messages are stored in the database. 
 * For anonymous users, messages are stored using the cookie/session-based approach. There is no support for persistent messages for anonymous users.
@@ -67,18 +66,21 @@ This document assumes that you are familiar with Python and Django.
         $ git clone git://github.com/mpasternak/django-monitio.git
 
 2. Make sure `monitio` is in your `PYTHONPATH`.
-3. Add `monitio` to your `INSTALLED_APPS` setting.
+3. Add `monitio` & company to your `INSTALLED_APPS` setting.
 
         INSTALLED_APPS = (
             ...
+            'django_sse',
+            'corsheaders',
             'monitio',
         )
 
-4. Make sure Django's `MessageMiddleware` is in your `MIDDLEWARE_CLASSES` setting (which is the case by default):
+4. Make sure Django's `MessageMiddleware` is in your `MIDDLEWARE_CLASSES` setting (which is the case by default), also enable `CorsMiddleware` there:
 
         MIDDLEWARE_CLASSES = (
             ...
             'django.contrib.messages.middleware.MessageMiddleware',
+    		'corsheaders.middleware.CorsMiddleware',
         )
  
 5. Add the `monitio` URLs to your URL conf. For instance, in order to make messages available under `http://domain.com/messages/`, add the following line to `urls.py`.
@@ -91,12 +93,28 @@ This document assumes that you are familiar with Python and Django.
 6. In your settings, set the message [storage backend](http://docs.djangoproject.com/en/dev/ref/contrib/messages/#message-storage-backends) to `monitio.storage.PersistentMessageStorage`:
 
         MESSAGE_STORAGE = 'monitio.storage.PersistentMessageStorage'
+        
+7. In your settings, add a reasonable default, which will prevent from showing read messages to the users:
 
-7. Set up the database tables using 
+        MONITIO_EXCLUDE_READ = True
+        
+8. Setup `django-sse` and `corsheaders`:
+
+        REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
+            'location': '127.0.0.1:6379',
+            'db': 0,
+        }
+        
+        CORS_ORIGIN_WHITELIST = (
+            '127.0.0.1',
+            '127.0.0.1:8000',
+        )
+
+9. Set up the database tables using 
 
 	    $ manage.py syncdb
 
-8. If you want to use the bundled templates, add the `templates` directory to your `TEMPLATE_DIRS` setting:
+10. If you want to use the bundled templates, add the `templates` directory to your `TEMPLATE_DIRS` setting:
 
         TEMPLATE_DIRS = (
             ...
@@ -249,4 +267,8 @@ There is plenty of room for improvement in these views and urls.
 
 ### AUTHORS ###
 
-[philomat](https://github.com/philomat) is the author of original code for [django-persistent-messages](https://github.com/philomat/django-persistent-messages), which was then forked by [maurojp](https://github.com/maurojp).
+[philomat](https://github.com/philomat) is the author of original code for [django-persistent-messages](https://github.com/philomat/django-persistent-messages), which was then forked by [maurojp](https://github.com/maurojp), then it was forked by [dotz](https://github.com/mpasternak)as
+
+
+
+
