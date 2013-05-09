@@ -1,4 +1,3 @@
-from django.core.handlers.wsgi import WSGIRequest
 from monitio import notify
 from monitio import constants
 

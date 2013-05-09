@@ -79,7 +79,7 @@ class Monit(models.Model):
                                   strings_only=True)
         extra_tags = force_unicode(self.extra_tags, strings_only=True)
 
-        if (self.read):
+        if self.read:
             read_tag = "read"
         else:
             read_tag = "unread"
