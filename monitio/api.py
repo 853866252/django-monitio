@@ -48,11 +48,11 @@ def debug(request, message, extra_tags='', fail_silently=False, subject='',
                        subject, user, email, from_user, expires, close_timeout)
 
 
-def create_message(to_user, from_user, level, message, extra_tags='',
+def create_message(to_user, level, message, from_user=None, extra_tags='',
                    subject='', expires=None, close_timeout=None, sse=True):
     """
     Use this method to create message without a request object - this can
-    be used in command-line utilities or for testing.
+    be used in command-line utilities, celery backend or for testing.
     """
 
     from monitio.storage import PersistentMessageStorage
