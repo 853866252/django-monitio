@@ -37,23 +37,6 @@ class MonitioSeleniumMixin:
     def assertCloseAllInvisible(self):
         self.assertEquals(self.page.close_all_div().visible(), False)
 
-class TestSelenium(MonitioSeleniumMixin, SeleniumTestCase):
-
-    def test_index(self):
-        pass
-
-    def test_no_messages(self):
-        self.assertCloseAllVisible()
-
-    def test_add_message_by_js(self):
-        self.assertCloseAllInvisible()
-
-        self.page.add_message_by_js(1, "foo", "bar")
-        self.assertCloseAllInvisible()
-
-        self.page.add_message_by_js(2, "foo", "bar")
-        self.assertCloseAllVisible()
-
 
 class TestSeleniumLoggedIn(MonitioSeleniumMixin, SeleniumTestCase):
 
@@ -63,6 +46,22 @@ class TestSeleniumLoggedIn(MonitioSeleniumMixin, SeleniumTestCase):
         u = User.objects.create_superuser('foo', 'foo@foo.pl', 'bar')
         self.login_via_admin(u.username, 'bar', then=self.url)
         self.user = u
+
+    def test_index(self):
+        pass
+
+    def test_no_messages(self):
+        print self.page.page_source
+        self.assertCloseAllInvisible()
+
+    def test_add_message_by_js(self):
+        self.assertCloseAllInvisible()
+
+        self.page.add_message_by_js(1, "foo", "bar")
+        self.assertCloseAllInvisible()
+
+        self.page.add_message_by_js(2, "foo", "bar")
+        self.assertCloseAllVisible()
 
     def create_messages(self, no):
         for a in range(no):
