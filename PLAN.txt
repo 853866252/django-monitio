@@ -1,26 +1,8 @@
-I fix a bug:
-    => open some messages
-    => click 'close all'
-    => try sending some more messages
-    => there will be a bug on JS console
+** POSSIBLE RACE CONDITION: if JS gets 2 messages with THE SAME PK, it should
+DISCARD the 2nd message. As this has not yet appeared, I'm not implementing
+this.
 
-I add a functionality:
-    => to enable or disable notifications via e-mail and via sse
-        .. using signals
-        .. monitio.notify_email.enable() in urls.py
-
-    => notification runs:
-        .. after transaction is commited
-        .. using django-post-transaction-signals package
-
-I create selenium integration tests for the above notifications
-
-I add a fallback eventsource to poly-fill missing EventSource in older browsers:
-    => via jquery eventsource
-    => ... and this does not work too good
-    =>
-
-I add a functionality, which is a django template tag to delete non-anonymous
+Functionality, which is a django template tag to delete non-anonymous
 comments for a given user from a web page, that contain a link to web page. Use
 case:
 - "Hi, this is message X, please click here to read the report"
@@ -29,15 +11,6 @@ case:
 - message is CLOSED (or marked as read) even before user enters the page
 To avoid unnecessary mess.
 
-I create a celery task to remove messages, that are read for more than 48 hrs
+Celery task to remove messages, that are read for more than 48 hrs
 
-I create documentation
-
-==============================================================================
-DONE:
-
-I create tests for:
-    => storage
-    => notify
-    => models
-    => api
+Better documentation

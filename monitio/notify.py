@@ -3,6 +3,7 @@ import json
 from django.core.mail import send_mail
 from django_sse.redisqueue import send_event
 from monitio import constants
+from monitio.models import Monit
 
 
 def email(level, message, extra_tags, subject, user, from_user):
@@ -11,6 +12,18 @@ def email(level, message, extra_tags, subject, user, from_user):
             'Function needs to be passed a `User` object with valid email address.')
     send_mail(subject, message, from_user.email if from_user else None,
               [user.email], fail_silently=False)
+
+
+def via_email(message_pk):
+
+    try:
+        message = Monit.objects.get(pk=message_pk)
+    except Monit.DoesNotExist:
+        return
+
+    return email(
+        message.level, message.message, message.extra_tags,
+        message.subject, message.user, message.from_user)
 
 
 def sse(level, pk, message, extra_tags, subject, user, from_user):
@@ -25,3 +38,21 @@ def sse(level, pk, message, extra_tags, subject, user, from_user):
                    extra_tags=extra_tags,
                    subject=subject, from_user=from_user)),
                channel=user)
+
+
+def via_sse(message_pk):
+
+    try:
+        message = Monit.objects.get(pk=message_pk)
+    except Monit.DoesNotExist:
+        return
+
+    if message.user:
+        _to = message.user.username
+
+    if message.from_user:
+        _from = message.user.username
+
+    return sse(
+        message.level, message.pk, message.message, message.extra_tags,
+        message.subject, _to, _from)

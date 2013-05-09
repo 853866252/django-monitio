@@ -2,8 +2,11 @@ import datetime
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.messages.storage.fallback import FallbackStorage
+from django.db import transaction
 from django.db.models import Q
 from django.conf import settings
+from django_transaction_signals import defer
+from monitio import notify
 
 from monitio.models import Monit
 from monitio.constants import PERSISTENT_MESSAGE_LEVELS
@@ -14,7 +17,6 @@ def get_user(request):
         return request.user
     else:
         return AnonymousUser()
-
 
 """
 Messages need a primary key when being displayed so that they can be closed/marked as read by the user.
@@ -62,6 +64,7 @@ class PersistentMessageStorage(FallbackStorage):
 
         This is called by BaseStorage._loaded_messages
         """
+
         is_anonymous = not get_user(self.request).is_authenticated()
         if is_anonymous:
             return super(PersistentMessageStorage, self)._get(*args, **kwargs)
@@ -187,8 +190,10 @@ class PersistentMessageStorage(FallbackStorage):
 
         return super(PersistentMessageStorage, self).update(response)
 
+    @transaction.commit_on_success
     def add(self, level, message, extra_tags='', subject='', user=None,
-            from_user=None, expires=None, close_timeout=None):
+            from_user=None, expires=None, close_timeout=None,
+            sse=True, email=False):
         """
         Adds or queues a message to the storage
 
@@ -229,7 +234,16 @@ class PersistentMessageStorage(FallbackStorage):
         # Hence, save it now instead of adding it to queue:
         if STORE_WHEN_ADDING:
             message.save()
+
+            if sse:
+                # Sent delayed SSE notification
+                defer(notify.via_sse, message.pk)
+
+            if email:
+                defer(notify.via_email, message.pk)
+
             return message
         else:
+            print "TAM"
             self.added_new = True
             self._queued_messages.append(message)

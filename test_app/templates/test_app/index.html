@@ -13,22 +13,46 @@
     {% include "monitio/header.html" %}
 </head>
 
-<body>
-Hi. Thank you for testing this software. Now, go to the command prompt and
-run:
-<pre>
-    $ manage.py send_message [from user] [to user] [message]
-</pre>
--- to create a persistent message, that will be displayed, when you refresh this
-page
-<p/>
-... or, for the cool stuff to happen:
-<pre>
-   $ manage.py sse_test
-</pre>
--- to send dynamic notifications to any user (including anonymous)
+<body style="width: 600px; margin-left: auto; margin-right: auto;">
+<p>
+    Hi. Thank you for testing this software!
+</p>
 
-{% include "monitio/message/includes/messages.jquery.html" %}
+{% if request.user.is_anonymous %}
+    <p>
+        You are <strong>not</strong> logged in. Please go to the <a
+            href="/admin/">admin</a>
+        and
+        log in (as test/test). </p>
 
+    <p>Then, please come back to this page - you will get additional
+        instructions on
+        how to test dynamic notifications messages.
+    </p>
+{% else %}
+    Now go to the command prompt and run:
+    <pre>
+    $ manage.py send_message [from user] [to user] [INFO|ERROR] [message]
+</pre>
+    for example:
+    <pre>
+    $ manage.py send_message test test INFO "This is a test message"
+    </pre>
+    This will create a persistent message, that will be displayed at once (via
+    SSE),
+    and will stay displayed when you refresh this page. You will need to close
+    it for it to disappear.
+    <p/>
+    ... or, if you want just to play with SSE - aka "the cool stuff":
+    <pre>
+   $ manage.py sse_test test
+</pre>
+    -- to send dynamic notifications to user 'test'. Even anonymous users could
+    receive SSE notifications, but currently, as I see no point in it, there
+    is no support for them.<p>
+    That's all. Now go and have fun! :-)
+</p>
+    {% include "monitio/message/includes/messages.jquery.html" %}
+{% endif %}
 </body>
 </html>

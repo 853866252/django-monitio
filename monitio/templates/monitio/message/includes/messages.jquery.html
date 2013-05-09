@@ -5,15 +5,60 @@
     var closeAllSelector = '.message-close-all';
     var closeAllSelectorDiv = '.message-close-all-div';
 
+    var newMessage = function (data) {
+        //console.log(data);
+        var div = $("#message-__PK__").clone(); // .css('display', 'block');
+        div.attr("class", div.attr("class") + " message");
+        var container = $("#messages-container");
+
+        $(div).attr("id", "message-" + data.pk)
+        $(div).find("#subject").text(data.subject);
+        $(div).find("#message").text(data.message);
+
+        state_tag = icon_tag = data.level;
+        if (data.level == 'error')
+            icon_tag = "circle-close";
+        if (data.level == 'info')
+            state_tag = 'highlight'
+
+        $(div).find(".ui-icon").attr("class", "ui-icon ui-icon-" + icon_tag);
+        $(div).find(".ui-corner-all").attr("class", "ui-corner-all ui-state-" + state_tag);
+
+        var close = $(div).find(closeSelector);
+        var close_href = close.attr("href");
+        close.attr("href", close_href.replace("1234567890", data.pk));
+
+        if (data.pk == -1)
+            close.remove();
+
+        container.append(div);
+        div.messageOpen();
+
+        if ($(messageSelector).length == 2) {
+            console.log("POKAZUJE");
+            $(closeAllSelectorDiv).messageOpen();
+        }
+    }
+
+
     $(document).ready(function () {
 
         $.fn.messageOpen = function () {
-            $(this).show('fast');
+            $(this).fadeTo('fast', 1, function(){
+                $(this).show('fast', function(){
+                });
+            });
         };
         $.fn.messageClose = function (remove) {
             $(this).fadeTo('fast', 0, function () {
                 $(this).hide('fast', function () {
                     $(this).remove();
+                });
+            });
+        };
+        $.fn.messageHide = function (remove) {
+            $(this).fadeTo('fast', 0, function () {
+                $(this).hide('fast', function (){
                 });
             });
         };
@@ -37,6 +82,7 @@
                 })
             }
             if ($(messageSelector).length <= 2) {
+                console.log("ZAMYKAM");
                 $(closeAllSelectorDiv).messageClose();
             }
             $(this).closest(messageSelector).messageClose();
@@ -46,7 +92,7 @@
             $.ajax({
                 url: $(this).attr('href')
             })
-            $(closeAllSelectorDiv).messageClose();
+            $(closeAllSelectorDiv).messageHide();
             $(messageSelector).messageClose();
         });
 
@@ -56,59 +102,15 @@
             {% endif %}
         {% endfor %}
 
-        function newMessage(data) {
-            //console.log(data);
-            var div = $("#message-__PK__").clone().css('display', 'block');
-            var container = $("#messages-container");
 
-            $(div).attr("id", "message-" + data.pk)
-            $(div).find("#subject").text(data.subject);
-            $(div).find("#message").text(data.message);
+        {#For testing purposes:#}
+        {% if request.GET.no_sse != "1" %}
+            var source = new EventSource('{% url "persistent-messages-sse" user.username %}');
 
-            state_tag = icon_tag = data.level;
-            if (data.level == 'error')
-                icon_tag = "circle-close";
-            if (data.level == 'info')
-                state_tag = 'highlight'
-
-            $(div).find(".ui-icon").attr("class", "ui-icon ui-icon-" + icon_tag);
-            $(div).find(".ui-corner-all").attr("class", "ui-corner-all ui-state-" + state_tag);
-
-            var close = $(div).find("a");
-            var close_href = close.attr("href");
-            close.attr("href", close_href.replace("1337", data.pk));
-
-            if (data.pk == -1)
-                close.remove();
-
-            container.append(div);
-
-            if ($(messageSelector).length == 3) {
-                $(closeAllSelectorDiv).messageOpen();
-            }
-        }
-
-        var source = new EventSource('{% url "persistent-messages-sse" user.username %}');
-
-        source.addEventListener('message', function (e) {
-            newMessage($.parseJSON(e.data));
-        });
-
-
-{##}
-{#        source.addEventListener('open', function (e) {#}
-{#            // Connection was opened.#}
-{#            console.log("OPENED");#}
-{#        }, false);#}
-{##}
-{#        source.addEventListener('error', function (e) {#}
-{#            if (e.readyState == EventSource.CLOSED) {#}
-{#                // Connection was closed.#}
-{#                //console.log('connection closed');#}
-{#            }#}
-{#            //console.log('error');#}
-{#        }, false);#}
-
+            source.addEventListener('message', function (e) {
+                newMessage($.parseJSON(e.data));
+            });
+        {% endif %}
     });
 
 </script>

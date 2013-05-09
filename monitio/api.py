@@ -1,7 +1,7 @@
+from django.core.handlers.wsgi import WSGIRequest
 from monitio import notify
 from monitio import constants
 
-# TODO: change the API so we can have message.pk here
 def add_message(request, level, message, extra_tags='', fail_silently=False,
                 subject='', user=None, email=False, sse=True, from_user=None,
                 expires=None, close_timeout=None):
@@ -50,14 +50,19 @@ def debug(request, message, extra_tags='', fail_silently=False, subject='',
 
 
 def create_message(to_user, from_user, level, message, extra_tags='',
-                   subject='', expires=None, close_timeout=None):
+                   subject='', expires=None, close_timeout=None, sse=True):
     """
-    Use this method to create message directly in the database.
+    Use this method to create message without a request object - this can
+    be used in command-line utilities or for testing.
     """
-    from monitio.models import Monit
 
-    return Monit.objects.create(user=to_user, level=level, message=message,
-                                  extra_tags=extra_tags, subject=subject,
-                                  from_user=from_user, expires=expires,
-                                  close_timeout=close_timeout)
+    from monitio.storage import PersistentMessageStorage
+    class request:
+        user = to_user
+        session = {}
 
+    request.messages = PersistentMessageStorage(request)
+
+    request.messages.add(level=level, message=message, extra_tags=extra_tags,
+                         subject=subject, from_user=from_user, expires=expires,
+                         close_timeout=close_timeout, sse=sse)

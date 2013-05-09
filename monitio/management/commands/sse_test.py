@@ -23,5 +23,5 @@ class Command(BaseCommand):
         print "Will send messages from ", user, "to", user
         while True:
             message = raw_input("message> ")
-            sse(constants.INFO, -1, message, "", "Sent from manage.py command",
+            sse(constants.INFO, -1, message, "", "SSE message",
                 user, user)

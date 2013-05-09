@@ -22,7 +22,7 @@ class TestNotify(TestCase):
 
     def test_email_sends(self):
         class user:
-            email = 'foo@bar.pl'
+            email = 'foo@127.0.0.1'
 
         notify.email('UNUSED', 'message', 'tags', 'subject', user, None)
         self.assertEquals(len(mail.outbox), 1)

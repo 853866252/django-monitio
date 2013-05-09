@@ -1,11 +1,7 @@
 from django.conf.urls import patterns, url, include
-from django.http import HttpResponseForbidden
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-from django_sse.redisqueue import RedisQueueView
+from django.contrib import admin
 
 from test_app.views import TestView
-from django.contrib import admin
 
 admin.autodiscover()
 
@@ -13,7 +9,6 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', TestView.as_view()),
+    url(r'^$', TestView.as_view(), name='index'),
     url(r'^messages/', include('monitio.urls')),
-    url("", include('django_socketio.urls')),
 )

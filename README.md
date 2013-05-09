@@ -82,23 +82,32 @@ This document assumes that you are familiar with Python and Django.
             'django.contrib.messages.middleware.MessageMiddleware',
     		'corsheaders.middleware.CorsMiddleware',
         )
+
+5. Add the CONTEXT_PROCESSOR for messages:
+
+        CONTEXT_PROCESSORS = (
+            ...
+            'django.contrib.messages.context_processors.messages',
+            ...
+        )
+
  
-5. Add the `monitio` URLs to your URL conf. For instance, in order to make messages available under `http://domain.com/messages/`, add the following line to `urls.py`.
+6. Add the `monitio` URLs to your URL conf. For instance, in order to make messages available under `http://domain.com/messages/`, add the following line to `urls.py`.
 
         urlpatterns = patterns('',
             (r'^messages/', include('monitio.urls')),
             ...
         )
 
-6. In your settings, set the message [storage backend](http://docs.djangoproject.com/en/dev/ref/contrib/messages/#message-storage-backends) to `monitio.storage.PersistentMessageStorage`:
+7. In your settings, set the message [storage backend](http://docs.djangoproject.com/en/dev/ref/contrib/messages/#message-storage-backends) to `monitio.storage.PersistentMessageStorage`:
 
         MESSAGE_STORAGE = 'monitio.storage.PersistentMessageStorage'
         
-7. In your settings, add a reasonable default, which will prevent from showing read messages to the users:
+8. In your settings, add a reasonable default, which will prevent from showing read messages to the users:
 
         MONITIO_EXCLUDE_READ = True
         
-8. Setup `django-sse` and `corsheaders`:
+9. Setup `django-sse` and `corsheaders`:
 
         REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
             'location': '127.0.0.1:6379',
@@ -110,11 +119,11 @@ This document assumes that you are familiar with Python and Django.
             '127.0.0.1:8000',
         )
 
-9. Set up the database tables using 
+10. Set up the database tables using
 
 	    $ manage.py syncdb
 
-10. If you want to use the bundled templates, add the `templates` directory to your `TEMPLATE_DIRS` setting:
+11. If you want to use the bundled templates, add the `templates` directory to your `TEMPLATE_DIRS` setting:
 
         TEMPLATE_DIRS = (
             ...

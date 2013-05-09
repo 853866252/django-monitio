@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
+    'django_transaction_signals',
     'django_sse',
     'corsheaders',
 
@@ -176,4 +177,11 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1',
     '127.0.0.1:8000',
 
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    # For testing
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
+    'django.contrib.auth.context_processors.auth',
 )

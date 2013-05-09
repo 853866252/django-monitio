@@ -6,7 +6,7 @@ from django.contrib.messages import utils
 from django.utils.translation import ugettext_lazy as _
 
 import monitio
-from monitio.constants import PERSISTENT_MESSAGE_LEVELS
+from monitio import constants 
 
 
 LEVEL_TAGS = utils.get_level_tags()
@@ -24,11 +24,11 @@ class Monit(models.Model):
         (messages.SUCCESS, 'SUCCESS'),
         (messages.WARNING, 'WARNING'),
         (messages.ERROR, 'ERROR'),
-        (monitio.DEBUG, 'PERSISTENT DEBUG'),
-        (monitio.INFO, 'PERSISTENT INFO'),
-        (monitio.SUCCESS, 'PERSISTENT SUCCESS'),
-        (monitio.WARNING, 'PERSISTENT WARNING'),
-        (monitio.ERROR, 'PERSISTENT ERROR'),
+        (constants.DEBUG, 'PERSISTENT DEBUG'),
+        (constants.INFO, 'PERSISTENT INFO'),
+        (constants.SUCCESS, 'PERSISTENT SUCCESS'),
+        (constants.WARNING, 'PERSISTENT WARNING'),
+        (constants.ERROR, 'PERSISTENT ERROR'),
     )
     level = models.IntegerField(choices=LEVEL_CHOICES)
     extra_tags = models.CharField(max_length=128)
@@ -42,7 +42,7 @@ class Monit(models.Model):
         ordering = ['-created']
 
     def is_persistent(self):
-        return self.level in PERSISTENT_MESSAGE_LEVELS
+        return self.level in constants.PERSISTENT_MESSAGE_LEVELS
 
     is_persistent.boolean = True
 

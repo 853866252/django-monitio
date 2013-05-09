@@ -1,5 +1,5 @@
 django
-django-socketio
 
 # test-requirements
 django-dynamic-fixture
+django-selenium-helpers
