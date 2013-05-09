@@ -231,6 +231,17 @@ You can also use the bundled templates instead. The following line replaces the 
 
     {% include "monitio/message/includes/messages.jquery.html" %}
 
+### Creating notifications from background tasks (eg. Celery) ###
+
+To create a notofication from a long-running, background process, use
+api.create_message:
+
+    def create_message(to_user, level, message, from_user=None, extra_tags='',
+                   subject='', expires=None, close_timeout=None, sse=True,
+                   email=False):
+
+This function will call PersistentStorage.add method for you.
+
 ### Storage extra methods ###
 
 In Django `request._messages` is set to the default storage you configured in your settings. Persistent Messages storage has some extra methods that Django built-in storages don't have that can be very useful:
@@ -276,7 +287,10 @@ There is plenty of room for improvement in these views and urls.
 
 ### AUTHORS ###
 
-[philomat](https://github.com/philomat) is the author of original code for [django-persistent-messages](https://github.com/philomat/django-persistent-messages), which was then forked by [maurojp](https://github.com/maurojp), then it was forked by [dotz](https://github.com/mpasternak)as
+[philomat](https://github.com/philomat) is the author of original code for
+[django-persistent-messages](https://github.com/philomat/django-persistent-messages),
+which was then forked by [maurojp](https://github.com/maurojp), then it was
+forked by [mpasternak](https://github.com/mpasternak).
 
 
 

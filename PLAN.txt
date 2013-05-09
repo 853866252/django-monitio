@@ -2,6 +2,10 @@
 DISCARD the 2nd message. As this has not yet appeared, I'm not implementing
 this.
 
+** tests for dispatch(), sse and e-mail notifications
+
+** tests for eventsource (currently disabled in tests, because it block devserver)
+
 Functionality, which is a django template tag to delete non-anonymous
 comments for a given user from a web page, that contain a link to web page. Use
 case:

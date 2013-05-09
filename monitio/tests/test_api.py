@@ -37,4 +37,4 @@ class TestApi(TestCase):
 
     def test_create_message(self):
         api.create_message(
-            G(get_user_model()), G(get_user_model()), INFO, 'message')
+            G(get_user_model()), INFO, 'message')
