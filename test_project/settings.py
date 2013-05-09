@@ -180,8 +180,9 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    # For testing
-    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.static',
+    # For testing
+    'django.core.context_processors.request',
 )
