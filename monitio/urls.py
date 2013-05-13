@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import *
-from django_longpolling.redis_views import BaseRedisPubSubView
-from monitio.views import SameUserChannelRedisQueueView, SSE_ANONYMOUS
+from monitio.views import SameUserChannelRedisQueueView
 
 urlpatterns = patterns(
     'monitio.views',

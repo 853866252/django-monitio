@@ -1,7 +1,11 @@
 import json
+import warnings
 
 from django.core.mail import send_mail
 from django_sse.redisqueue import send_event
+
+from monitio.conf import settings
+from monitio import testutil
 from monitio import constants
 from monitio.models import Monit
 
@@ -15,7 +19,6 @@ def email(level, message, extra_tags, subject, user, from_user):
 
 
 def via_email(message_pk):
-
     try:
         message = Monit.objects.get(pk=message_pk)
     except Monit.DoesNotExist:
@@ -31,17 +34,26 @@ def sse(level, pk, message, extra_tags, subject, user, from_user):
     :type user: basestring
     :type from_user: basestring
     """
-    send_event("message",
-               json.dumps(dict(
-                   level=constants.DEFAULT_TAGS.get(level), pk=pk,
-                   message=message,
-                   extra_tags=extra_tags,
-                   subject=subject, from_user=from_user)),
-               channel=user)
+
+    msg = json.dumps(dict(
+        level=constants.DEFAULT_TAGS.get(level), pk=pk,
+        message=message,
+        extra_tags=extra_tags,
+        subject=subject, from_user=from_user))
+
+    if settings.TESTING:
+        #
+        # Please see notes in monitio.conf.settings and monitio.notify.sse
+        #
+        warnings.warn(
+            "Testing mode - I will fake sending SSE messages and bypass Redis")
+        testutil.MESSAGES.append(msg)
+        return
+
+    send_event("message", msg, channel=user)
 
 
 def via_sse(message_pk):
-
     try:
         message = Monit.objects.get(pk=message_pk)
     except Monit.DoesNotExist:

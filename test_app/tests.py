@@ -2,16 +2,17 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 import time
-from selenium.common.exceptions import StaleElementReferenceException, InvalidSelectorException
-from monitio import ERROR
+from selenium import webdriver
+from selenium.common.exceptions import StaleElementReferenceException, InvalidSelectorException, NoSuchElementException
+from monitio import ERROR, notify, INFO
 from monitio.models import Monit
 
-from selenium_helpers import SeleniumTestCase, wd
+from selenium_helpers import SeleniumTestCase, wd, MyWebDriver
 
 User = get_user_model()
 
 
-class IndexPage(wd()):
+class IndexPageMixin:
     def close_all_div(self):
         return self.find_element_by_jquery(".message-close-all-div")
 
@@ -27,18 +28,27 @@ class IndexPage(wd()):
                                    pk, subject, message)
 
 
-class MonitioSeleniumMixin:
+class IndexPageFirefox(IndexPageMixin, MyWebDriver(webdriver.Firefox)):
+    pass
+
+
+class IndexPageChrome(IndexPageMixin, MyWebDriver(webdriver.Chrome)):
+    pass
+
+
+class IndexPageIe(IndexPageMixin, MyWebDriver(webdriver.Ie)):
+    pass
+
+
+class MonitioTestCase(SeleniumTestCase):
     url = reverse('index') + "?no_sse=1"
-    pageClass = IndexPage
+    pageClass = IndexPageFirefox
 
     def assertCloseAllVisible(self):
         self.assertEquals(self.page.close_all_div().visible(), True)
 
     def assertCloseAllInvisible(self):
         self.assertEquals(self.page.close_all_div().visible(), False)
-
-
-class TestSeleniumLoggedIn(MonitioSeleniumMixin, SeleniumTestCase):
 
     def setUp(self):
         SeleniumTestCase.setUp(self)
@@ -47,6 +57,8 @@ class TestSeleniumLoggedIn(MonitioSeleniumMixin, SeleniumTestCase):
         self.login_via_admin(u.username, 'bar', then=self.url)
         self.user = u
 
+
+class TestSeleniumLoggedIn(MonitioTestCase):
     def test_index(self):
         pass
 
@@ -65,7 +77,8 @@ class TestSeleniumLoggedIn(MonitioSeleniumMixin, SeleniumTestCase):
 
     def create_messages(self, no):
         for a in range(no):
-            x = Monit.objects.create(message='LOL 123', level=ERROR, user=self.user)
+            x = Monit.objects.create(message='LOL 123', level=ERROR,
+                                     user=self.user)
         return x
 
     def test_closeall_single_message(self):
@@ -112,3 +125,37 @@ class TestSeleniumLoggedIn(MonitioSeleniumMixin, SeleniumTestCase):
         self.assertCloseAllInvisible()
         self.page.add_message_by_js(2, "foo", "bar")
         self.assertCloseAllVisible()
+
+
+class SimpleEventsourceMixin:
+    url = reverse('index')
+
+    def test_index(self):
+        from monitio.conf import settings
+        print settings.TESTING
+
+        time.sleep(2)
+
+        notify.sse(
+            INFO, 31337, 'WUTLOLSKI', 'info unread', "Subject", 'foo', 'foo')
+
+        self.assertRaises(NoSuchElementException,
+                          self.page.find_element_by_id,
+                          "#message-31337")
+
+        time.sleep(2)
+
+        self.page.find_element_by_id("message-31337")
+
+
+class TestEventsourceFirefox(SimpleEventsourceMixin, MonitioTestCase):
+    pageClass = IndexPageFirefox
+
+
+class TestEventsourceChrome(SimpleEventsourceMixin, MonitioTestCase):
+    pageClass = IndexPageChrome
+
+
+# This fails to open the web page and I don't know why
+# class TestEventsourceIe(SimpleEventsourceMixin, MonitioTestCase):
+#     pageClass = IndexPageIe

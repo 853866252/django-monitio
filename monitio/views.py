@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
@@ -5,9 +6,11 @@ from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django_sse.redisqueue import RedisQueueView
+from monitio import testutil
 
 from monitio.models import Monit
 from monitio.storage import get_user
+from monitio.conf import settings
 
 SSE_ANONYMOUS = "__anonymous__"
 
@@ -84,6 +87,25 @@ class DynamicChannelRedisQueueView(RedisQueueView):
     def get_redis_channel(self):
         return self.kwargs.get('channel') or self.redis_channel
 
+    def iterator(self):
+        if settings.TESTING:
+            #
+            # When testing, with current Django (1.5.1) the LiveServerTestCase
+            # servers only one thread for the server. So, if we listen for
+            # Redis messages, we block the only socket of the test server. So,
+            # to be able to test Javascript in web browsers (EventSource
+            # support) we just fake incoming messages. Yes, this does not
+            # test our Redis communication properly. On the other hand,
+            # I rather leave Redis communication w/o testing, because
+            # that's job of django-sse package - and focus on testing
+            # browsers with EventSource support.
+            #
+            for message in testutil.MESSAGES:
+                self.sse.add_message("message", message)
+            testutil.MESSAGES = []
+            return [1]
+        return RedisQueueView.iterator(self)
+
 
 class SameUserChannelRedisQueueView(DynamicChannelRedisQueueView):
     """Named Redis pub/sub, that allows logged-in users to connect
@@ -102,4 +124,3 @@ class SameUserChannelRedisQueueView(DynamicChannelRedisQueueView):
         if pass_anon or pass_logged_in:
             return DynamicChannelRedisQueueView.dispatch(self, request, *args, **kwargs)
         return HttpResponseForbidden()
-
