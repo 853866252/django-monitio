@@ -13,8 +13,9 @@ setup(
     license='BSD',
     url='http://github.com/mpasternak/django-monitio',
     keywords = ['messages', 'django', 'persistent', 'sse'],
-    packages=find_packages(),
+    packages=find_packages(exclude=['test_app', 'test_project']),
     package_data={'monitio': [
+        'templates/*/*.html'
         'templates/*/*/*.html',
         'templates/*/*/*/*.html']},
     classifiers=[
