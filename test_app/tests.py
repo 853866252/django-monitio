@@ -1,13 +1,15 @@
 # -*- encoding: utf-8 -*-
+import time
+
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-import time
 from selenium import webdriver
 from selenium.common.exceptions import StaleElementReferenceException, InvalidSelectorException, NoSuchElementException
+
 from monitio import ERROR, notify, INFO
 from monitio.models import Monit
+from selenium_helpers import SeleniumTestCase, MyWebDriver
 
-from selenium_helpers import SeleniumTestCase, wd, MyWebDriver
 
 User = get_user_model()
 
@@ -61,6 +63,13 @@ class MonitioTestCase(SeleniumTestCase):
 class TestSeleniumLoggedIn(MonitioTestCase):
     def test_index(self):
         pass
+
+    def test_admin(self):
+        self.open('/admin/sites/site/add/')
+        for element in ['id_domain', 'id_name']:
+            self.page.find_element_by_id(element).send_keys(element)
+        self.page.find_element_by_name('_save').click()
+        self.assertNotContains(self.page.page_source, "Server Error (500)")
 
     def test_no_messages(self):
         print self.page.page_source
