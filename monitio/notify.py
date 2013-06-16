@@ -59,9 +59,11 @@ def via_sse(message_pk):
     except Monit.DoesNotExist:
         return
 
+    _to = None
     if message.user:
         _to = message.user.username
 
+    _from = None
     if message.from_user:
         _from = message.user.username
 

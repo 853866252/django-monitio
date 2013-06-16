@@ -193,7 +193,7 @@ class PersistentMessageStorage(FallbackStorage):
     @transaction.commit_on_success
     def add(self, level, message, extra_tags='', subject='', user=None,
             from_user=None, expires=None, close_timeout=None,
-            sse=True, email=False):
+            sse=False, email=False):
         """
         Adds or queues a message to the storage
 
@@ -230,8 +230,9 @@ class PersistentMessageStorage(FallbackStorage):
                           from_user=from_user, expires=expires,
                           close_timeout=close_timeout)
 
-        # Messages need a primary key when being displayed so that they can be closed/marked as read by the user.
-        # Hence, save it now instead of adding it to queue:
+        # Messages need a primary key when being displayed so that they can be
+        # closed/marked as read by the user. Hence, save it now instead of
+        # adding it to queue:
         if STORE_WHEN_ADDING:
             message.save()
 

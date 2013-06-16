@@ -69,7 +69,7 @@ class TestSeleniumLoggedIn(MonitioTestCase):
         for element in ['id_domain', 'id_name']:
             self.page.find_element_by_id(element).send_keys(element)
         self.page.find_element_by_name('_save').click()
-        self.assertNotContains(self.page.page_source, "Server Error (500)")
+        self.assertNotIn("Server Error (500)", self.page.page_source)
 
     def test_no_messages(self):
         print self.page.page_source
