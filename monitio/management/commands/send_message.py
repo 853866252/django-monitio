@@ -2,7 +2,9 @@ import sys
 
 from django.core.management.base import BaseCommand
 
-from django.contrib.auth.models import User
+from django.contrib import auth
+
+User = auth.get_user_model()
 
 from monitio import api
 
@@ -36,4 +38,5 @@ class Command(BaseCommand):
         api.create_message(level=level,
                            from_user=from_user, to_user=to_user,
                            message=message,
-                           subject="%s message" % args[2])
+                           subject="%s message" % args[2],
+                           sse=True)

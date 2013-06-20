@@ -15,6 +15,8 @@ setup(
     keywords = ['messages', 'django', 'persistent', 'sse'],
     packages=find_packages(exclude=['test_app', 'test_project']),
     package_data={'monitio': [
+        'locale/*/LC_MESSAGES/*',
+        'static/monitio/js/*.js',
         'templates/*/*.html',
         'templates/*/*/*.html',
         'templates/*/*/*/*.html']},
