@@ -245,6 +245,5 @@ class PersistentMessageStorage(FallbackStorage):
 
             return message
         else:
-            print "TAM"
             self.added_new = True
             self._queued_messages.append(message)

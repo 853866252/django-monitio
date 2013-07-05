@@ -6,14 +6,13 @@
     var closeAllSelectorDiv = '.message-close-all-div';
 
     var newMessage = function (data) {
-        //console.log(data);
         var div = $("#message-__PK__").clone(); // .css('display', 'block');
         div.attr("class", div.attr("class") + " message");
         var container = $("#messages-container");
 
         $(div).attr("id", "message-" + data.pk)
-        $(div).find("#subject").text(data.subject);
-        $(div).find("#message").text(data.message);
+        $(div).find("#subject").html(data.subject);
+        $(div).find("#message").html(data.message);
 
         state_tag = icon_tag = data.level;
         if (data.level == 'error')
@@ -35,7 +34,6 @@
         div.messageOpen();
 
         if ($(messageSelector).length == 2) {
-            console.log("POKAZUJE");
             $(closeAllSelectorDiv).messageOpen();
         }
     }
@@ -82,7 +80,6 @@
                 })
             }
             if ($(messageSelector).length <= 2) {
-                console.log("ZAMYKAM");
                 $(closeAllSelectorDiv).messageClose();
             }
             $(this).closest(messageSelector).messageClose();

@@ -17,6 +17,7 @@ setup(
     package_data={'monitio': [
         'locale/*/LC_MESSAGES/*',
         'static/monitio/js/*.js',
+        'static/monitio/css/*.css',
         'templates/*/*.html',
         'templates/*/*/*.html',
         'templates/*/*/*/*.html']},

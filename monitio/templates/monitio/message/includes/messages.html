@@ -1,23 +1,25 @@
 {% load i18n %}
-<div id="messages-container">
-    {% for message in messages %}
-        {% if not hide_persistent or not message.is_persistent %}
-            {% include "monitio/message/includes/message_li.html" %}
-        {% endif %}
-    {% endfor %}
-</div>
+<div id="monitio-container">
+    <div id="messages-container">
+        {% for message in messages %}
+            {% if not hide_persistent or not message.is_persistent %}
+                {% include "monitio/message/includes/message_li.html" %}
+            {% endif %}
+        {% endfor %}
+    </div>
 
-<div class="ui-widget message-close-all-div"
-     {% if close_all and messages|length > 1 %}{% else %}style="display: none;"{% endif %}>
+    <div class="ui-widget message-close-all-div"
+         {% if close_all and messages|length > 1 %}{% else %}style="display: none;"{% endif %}>
 
-    <div class="ui-corner-all ui-state-highlight"
-         style="margin-top: 5px; padding: 0 .8em;">
+        <div class="ui-corner-all ui-state-highlight"
+             style="margin-top: 5px; padding: 0 .8em;">
 
                 <span class="ui-icon ui-icon-circle-close"
                       style="float: left; margin-right: .7em; margin-top: .15em;"></span>
 
-        <a href="{% url "message_mark_all_read" %}"
-           class="message-close-all">
-            <span>{% trans "close all messages" %}</span></a>
+            <a href="{% url "message_mark_all_read" %}"
+               class="message-close-all">
+                <span>{% trans "close all messages" %}</span></a>
+        </div>
     </div>
 </div>
