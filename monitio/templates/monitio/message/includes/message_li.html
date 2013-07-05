@@ -13,14 +13,19 @@
         {% for tag in message.tags %}
         ui-icon-{% if tag == "error" %}circle-close{% else %}{{ tag }}{% endif %}
         {% endfor %}"
-          style="float: left; margin-right: .7em; margin-top: .15em;"></span>
+              style="float: left; margin-right: .7em; margin-top: .15em;"></span>
 
-            {% if message.subject %}<strong>{{ message.subject|safe }}:</strong>{% endif %}
+        {% if message.subject %}<strong>{{ message.subject|safe }}:
+            </strong>{% endif %}
 
-            {{ message.message|safe }}
+        {{ message.message|safe }}
 
-            {% if message.is_persistent or jquery %}
-                <a class="message-close icon" href="{% if message.is_persistent %}{% url "message_mark_read" message.pk %}{% else %}#{% endif %}"><span>{% trans "close" %}</span></a>
-            {% endif %}
+        {% if message.is_persistent or jquery %}
+            <div style="float: right;">
+                <a class="message-close icon" href="
+                        {% if message.is_persistent %}{% url "message_mark_read" message.pk %}{% else %}#{% endif %}"><span>{% trans "close" %}</span></a>
+
+            </div>
+        {% endif %}
     </div>
 </div>
