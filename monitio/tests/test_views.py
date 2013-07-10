@@ -1,11 +1,13 @@
 # -*- encoding: utf-8 -*-
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.http import Http404
 
 from django.test import TestCase, RequestFactory
 from django_dynamic_fixture import G
 from monitio.models import Monit
+from monitio.templatetags.mark_as_read_by_url import mark_as_read_by_url
 from monitio.views import message_detail, message_delete, message_delete_all, message_mark_read, message_mark_all_read, DynamicChannelRedisQueueView, SameUserChannelRedisQueueView
 
 
@@ -176,3 +178,30 @@ class TestViews(TestCase):
 
         finally:
             DynamicChannelRedisQueueView.dispatch = backup
+
+
+URL = "/omg/roxx/"
+URL_2 = URL + "/foo"
+
+class TestMarkAsRead(TestCase):
+    def setUp(self):
+        self.user = G(User)
+        self.user_2 = G(User)
+        self.factory = UserRequestFactory(self.user)
+        self.message = G(
+            Monit, read=False, message='foo', user=self.user, url=URL)
+        self.message = G(
+            Monit, read=False, message='foo', user=self.user, url=URL_2)
+        self.message = G(
+            Monit, read=False, message='foo', user=self.user_2, url=URL)
+        self.request = self.factory.get(URL)
+
+    def test_mark_as_read_by_url(self):
+        context = dict(request=self.request)
+        mark_as_read_by_url(context)
+        self.assertEquals(
+            Monit.objects.get(url=URL, user=self.user).read, True)
+        self.assertEquals(
+            Monit.objects.get(url=URL_2, user=self.user).read, False)
+        self.assertEquals(
+            Monit.objects.get(url=URL, user=self.user_2).read, False)
