@@ -1,4 +1,9 @@
-<!DOCTYPE html>
+{# mark_as_read_by_url automatically marks all messages with #}
+{# url = request.get_full_path and user=request.user as READ #}
+{# So, when you click a specific page, it can autmatically close #}
+{# some messages. #}
+{% load mark_as_read_by_url %}
+{% mark_as_read_by_url %}<!DOCTYPE html>
 <html>
 <head>
     <title>django-monitio demo</title>
@@ -38,10 +43,13 @@
     <pre>
     $ manage.py send_message test test INFO "This is a test message"
     </pre>
-    This will create a persistent message, that will be displayed at once (via
-    SSE),
-    and will stay displayed when you refresh this page. You will need to close
-    it for it to disappear.
+    <strong>Make sure you are runing Redis</strong> on 127.0.0.1:6379 before
+    issuing that command.
+    <p>
+        This will create a persistent message, that will be displayed at once
+        (via SSE), and will stay displayed when you refresh this page. You will
+        need to close it for it to stop displaying.
+    </p>
     <p/>
     ... or, if you want just to play with SSE - aka "the cool stuff":
     <pre>
@@ -55,4 +63,4 @@
     {% include "monitio/message/includes/messages.jquery.html" %}
 {% endif %}
 </body>
-</html>
+</html

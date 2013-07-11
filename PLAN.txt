@@ -9,15 +9,6 @@ this.
 
 ** tests for eventsource (currently disabled in tests, because it block devserver)
 
-Functionality, which is a django template tag to delete non-anonymous
-comments for a given user from a web page, that contain a link to web page. Use
-case:
-- "Hi, this is message X, please click here to read the report"
-- user clicks
-- user enters a web page
-- message is CLOSED (or marked as read) even before user enters the page
-To avoid unnecessary mess.
-
 Celery task to remove messages, that are read for more than 48 hrs
 
 Better documentation
