@@ -59,9 +59,18 @@ class MonitioTestCase(SeleniumTestCase):
         self.login_via_admin(u.username, 'bar', then=self.url)
         self.user = u
 
+class TestSeleniumNotLoggedIn(SeleniumTestCase):
+    url = reverse('index') + '?no_sse=1'
+    pageClass = IndexPageFirefox
+
+    def test_index(self):
+        self.open('/')
+        self.assertNotIn("Server Error", self.page.page_source)
+
 
 class TestSeleniumLoggedIn(MonitioTestCase):
     def test_index(self):
+        self.open('/')
         pass
 
     def test_admin(self):
