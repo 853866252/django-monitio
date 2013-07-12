@@ -193,7 +193,7 @@ class PersistentMessageStorage(FallbackStorage):
     @transaction.commit_on_success
     def add(self, level, message, extra_tags='', subject='', user=None,
             from_user=None, expires=None, close_timeout=None,
-            sse=False, email=False):
+            sse=False, email=False, url=None):
         """
         Adds or queues a message to the storage
 
@@ -205,6 +205,7 @@ class PersistentMessageStorage(FallbackStorage):
         :param from_user: `auth.User` that sends the message
         :param expires: Timestamp that indicates when the message expires
         :param close_timeout: Integer
+        :param url: Optional string with URL leading to details of a given message
 
         .. note:: The message is only saved if it contains something and its level is over the recorded level (`MESSAGE_LEVEL`) `self.level`
         """
@@ -226,9 +227,9 @@ class PersistentMessageStorage(FallbackStorage):
 
         # Add the message
         message = Monit(user=to_user, level=level, message=message,
-                          extra_tags=extra_tags, subject=subject,
-                          from_user=from_user, expires=expires,
-                          close_timeout=close_timeout)
+                        extra_tags=extra_tags, subject=subject,
+                        from_user=from_user, expires=expires,
+                        close_timeout=close_timeout, url=url)
 
         # Messages need a primary key when being displayed so that they can be
         # closed/marked as read by the user. Hence, save it now instead of
