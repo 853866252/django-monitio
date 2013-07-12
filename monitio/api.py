@@ -2,7 +2,7 @@ from monitio import notify
 from monitio import constants
 
 def add_message(request, level, message, extra_tags='', fail_silently=False,
-                subject='', user=None, email=False, sse=False, from_user=None,
+                subject='', user=None, etmail=False, sse=False, from_user=None,
                 expires=None, close_timeout=None, url=None):
     return request._messages.add(level, message, extra_tags, subject, user,
                                  from_user, expires, close_timeout,
@@ -60,4 +60,4 @@ def create_message(to_user, level, message, from_user=None, extra_tags='',
     request.messages.add(level=level, message=message, extra_tags=extra_tags,
                          subject=subject, from_user=from_user, expires=expires,
                          close_timeout=close_timeout, sse=sse, email=email,
-                         url=None)
+                         url=url)
