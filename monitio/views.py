@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django_sse.redisqueue import RedisQueueView
+from sse import Sse
 from monitio import testutil
 
 from monitio.models import Monit
@@ -87,6 +88,33 @@ class DynamicChannelRedisQueueView(RedisQueueView):
     def get_redis_channel(self):
         return self.kwargs.get('channel') or self.redis_channel
 
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        # This is basically the same method as in RedisQueueView.dispatch,
+        # which should be a BaseSseView.dispatch. The only thing we modify
+        # here is an extra header, called X-Accel-Buffering, which disables
+        # buffering of this view by a webserver, for example nginx needs
+        # that: http://wiki.nginx.org/X-accel#X-Accel-Buffering .
+
+        # Also, we close db connection, as it won't be needed here.
+
+        self.sse = Sse()
+
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+
+        from django import db
+        db.close()
+
+        response = HttpResponse(self._iterator(), content_type="text/event-stream")
+        response['Cache-Control'] = 'no-cache'
+        response['Software'] = 'django-sse'
+        response['X-Accel-Buffering'] = 'no'
+        return response
+
+
     def iterator(self):
         if settings.TESTING:
             #
@@ -104,6 +132,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
                 self.sse.add_message("message", message)
             testutil.MESSAGES = []
             return [1]
+
         return RedisQueueView.iterator(self)
 
 
