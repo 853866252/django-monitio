@@ -1,4 +1,4 @@
 include monitio
-global-include *.jstu
+global-include *.js
 global-include *.html
 prune test_app

@@ -1,4 +1,7 @@
 django
+git+https://github.com/niwibe/django-sse.git#egg=django_sse
+sse
+corsheaders
 
 # test-requirements
 django-dynamic-fixture
