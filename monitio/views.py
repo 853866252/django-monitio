@@ -106,7 +106,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
         self.kwargs = kwargs
 
         from django import db
-        db.close()
+        db.close_connection()
 
         response = HttpResponse(self._iterator(), content_type="text/event-stream")
         response['Cache-Control'] = 'no-cache'
