@@ -1,5 +1,5 @@
-import json
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http.response import StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
@@ -108,7 +108,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
         from django import db
         db.close_connection()
 
-        response = HttpResponse(self._iterator(), content_type="text/event-stream")
+        response = StreamingHttpResponse(self._iterator(), content_type="text/event-stream")
         response['Cache-Control'] = 'no-cache'
         response['Software'] = 'django-sse'
         response['X-Accel-Buffering'] = 'no'
