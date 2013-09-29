@@ -97,7 +97,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
             msg = u''
             for bufferitem in self.sse:
                 msg = msg + bufferitem
-            yield msg + (" " * (1024-len(msg)))
+            yield msg + (" " * (4096-len(msg)))
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
