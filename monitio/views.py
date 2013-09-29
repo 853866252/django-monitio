@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from django.http.response import StreamingHttpResponse
+from django.http.response import StreamingHttpResponse, CompatibleStreamingHttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
@@ -88,6 +88,16 @@ class DynamicChannelRedisQueueView(RedisQueueView):
     def get_redis_channel(self):
         return self.kwargs.get('channel') or self.redis_channel
 
+    def _iterator(self):
+        """Send messages padded with spaces up to 1024-bytes boundary.
+
+        Yes, this is a hack. Yes, it does work.
+        """
+        for subiterator in self.iterator():
+            msg = u''
+            for bufferitem in self.sse:
+                msg = msg + bufferitem
+            yield msg + (" " * (1024-len(msg)))
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -108,7 +118,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
         from django import db
         db.close_connection()
 
-        response = StreamingHttpResponse(self._iterator(), content_type="text/event-stream")
+        response = HttpResponse(self._iterator(), content_type="text/event-stream")
         response['Cache-Control'] = 'no-cache'
         response['Software'] = 'django-sse'
         response['X-Accel-Buffering'] = 'no'
