@@ -139,6 +139,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
             testutil.MESSAGES = []
             return [1]
 
+        self.sse.add_message('debug', 'Hi browser, you are connected.')
         return RedisQueueView.iterator(self)
 
 
