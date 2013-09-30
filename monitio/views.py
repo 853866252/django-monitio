@@ -89,10 +89,6 @@ class DynamicChannelRedisQueueView(RedisQueueView):
         return self.kwargs.get('channel') or self.redis_channel
 
     def _iterator(self):
-        """Send messages padded with spaces up to 1024-bytes boundary.
-
-        Yes, this is a hack. Yes, it does work.
-        """
         for subiterator in self.iterator():
             msg = u''
             for bufferitem in self.sse:
