@@ -89,8 +89,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
         return self.kwargs.get('channel') or self.redis_channel
 
     def _iterator(self):
-        yield u":" + (" " * 2048) + "\n"
-        yield ":retry 2000\n"
+        yield u":" + (" " * 2048) + "\n" + ":retry 2000\n"
         for subiterator in self.iterator():
             msg = u''
             for bufferitem in self.sse:
