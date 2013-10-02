@@ -17,7 +17,10 @@ Monitio is built upon:
 * [django-transaction-signals](https://github.com/davehughes/django-transaction-signals)
 * [jQuery](http://jquery.com/) and [jQueryUI](http://jqueryui.com)
 
-With such sophisticated setup, using packages from many individuals, the demo application is currently properly running on MSIE 10, Opera 12, FFox 16 and Safari 5.1.7 on Windows. 
+With such sophisticated setup, using packages from many individuals, the demo 
+application is currently properly running on MSIE 10, Opera 12, FFox 16 and 
+Safari 5.1.7 on Windows. Also, monitio has been tested in production environment
+with nginx + gunicorn, which also has been found to work properly. 
 
 
 Long explanation
