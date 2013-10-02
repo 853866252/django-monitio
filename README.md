@@ -129,6 +129,21 @@ This document assumes that you are familiar with Python and Django.
             ...
             'path/to/monitio/templates')
         )
+        
+12. Setup a production server - for nginx + gunicorn, please use configuration below:
+
+		
+		location ~ ^/messages {
+			proxy_pass http://your-gunicorn-address.../
+			proxy_buffering off;
+			proxy_cache off;
+			proxy_set_header Host $host;
+			
+			proxy_set_header Connection '';
+			proxy_http_version 1.1;
+			chunked_transfer_encoding off;
+		}
+
 
 
 Using messages in views and templates
