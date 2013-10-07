@@ -133,7 +133,7 @@ This document assumes that you are familiar with Python and Django.
             'path/to/monitio/templates')
         )
         
-12. Setup a production server - for nginx + gunicorn, please use configuration below:
+12. Setup a production server - for [nginx](http://nginx.org/) + [gunicorn](http://gunicorn.org), please use configuration below:
 
 		
 		location ~ ^/messages {
@@ -147,6 +147,7 @@ This document assumes that you are familiar with Python and Django.
 			chunked_transfer_encoding off;
 		}
 
+   And, for [gunicorn](http://gunicorn.org), make sure you install [gevent](http://www.gevent.org/) and run [gunicorn](http://gunicorn.org) with parameter `-k gevent`
 
 
 Using messages in views and templates
