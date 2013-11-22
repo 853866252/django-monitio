@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name='django-monitio',
-    version='0.2',
+    version='0.2.1',
     description='Unified, persistent and dynamic user messages/notifications for Django',
     long_description=read('README.md'),
     author='mpasternak',

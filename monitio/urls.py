@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 from monitio.views import SameUserChannelRedisQueueView
 
 urlpatterns = patterns(
