@@ -1,13 +1,7 @@
 {% load i18n %}
+{% load message_filters  %}
 <div id="message-{{ message.pk }}" class="ui-widget message">
-    <div class="ui-corner-all
-    {% if "info" in message.tags %}
-    ui-state-highlight
-    {% else %}
-    {% for tag in message.tags %}
-    ui-state-{{ tag }}
-    {% endfor %}
-    {% endif %}"
+    <div class="ui-corner-all {{ message|message_css_classes }}"
          style="margin-top: 5px; padding: 0 .8em;">
         <span class="ui-icon
         {% for tag in message.tags %}
