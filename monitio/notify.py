@@ -36,10 +36,12 @@ def sse(level, pk, message, extra_tags, subject, user, from_user):
     """
 
     msg = json.dumps(dict(
-        level=constants.DEFAULT_TAGS.get(level), pk=pk,
+        level=level,
+        pk=pk,
         message=message,
         extra_tags=extra_tags,
-        subject=subject, from_user=from_user))
+        subject=subject,
+        from_user=from_user))
 
     if settings.TESTING:
         #

@@ -1,12 +1,16 @@
+from django.contrib.messages.api import get_messages
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.http.response import StreamingHttpResponse, CompatibleStreamingHttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
+import json
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django_sse.redisqueue import RedisQueueView
+from redis.exceptions import ConnectionError
 from sse import Sse
+import time
 from monitio import testutil
 
 from monitio.models import Monit
@@ -89,12 +93,24 @@ class DynamicChannelRedisQueueView(RedisQueueView):
         return self.kwargs.get('channel') or self.redis_channel
 
     def _iterator(self):
-        yield u":" + (" " * 2048) + "\n" + ":retry 2000\n"
-        for subiterator in self.iterator():
-            msg = u''
-            for bufferitem in self.sse:
-                msg = msg + bufferitem
+        #yield u"event: debug\ndata: " + (" " * 2048) + "\n" + "retry: 2000\n"
+        try:
+            for subiterator in self.iterator():
+                msg = u''
+                for bufferitem in self.sse:
+                    msg = msg + bufferitem
+                yield msg
+                print "X" * 90
+                print msg
+        except ConnectionError, e:
+            error_data = dict(
+                extra_tags="",
+                level=140,
+                message="Cannot connect to Redis server",
+                subject="Redis error")
+            msg = "event: message\ndata: %s\n\n\n" % json.dumps(error_data)
             yield msg
+            raise e
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -161,3 +177,16 @@ class SameUserChannelRedisQueueView(DynamicChannelRedisQueueView):
         if pass_anon or pass_logged_in:
             return DynamicChannelRedisQueueView.dispatch(self, request, *args, **kwargs)
         return HttpResponseForbidden()
+
+
+def messages_json(request):
+    def serialize(msg):
+        ret = {}
+        for attr in ['subject', 'message', 'level', 'url', 'pk']:
+            ret[attr] = getattr(msg, attr)
+        ret['is_persistent'] = msg.is_persistent();
+        return ret
+
+    return HttpResponse(
+        json.dumps([serialize(msg) for msg in get_messages(request)]),
+        mimetype='application/javascript')

@@ -1,6 +1,5 @@
 # coding=utf-8
 from django import template  
- 
 
 def latest(queryset, count):
     return queryset.order_by('-created')[:count]

@@ -17,6 +17,9 @@ urlpatterns = patterns(
         name='message_delete'),
     url(r'^delete/all/$', 'message_delete_all', name='message_delete_all'),
 
+    # Get via json
+    url(r'^json/$', 'messages_json', name='message_json'),
+
     # django-sse
     url(r'^sse/(?P<channel>\w+)?$',
         SameUserChannelRedisQueueView.as_view(), name="persistent-messages-sse"),

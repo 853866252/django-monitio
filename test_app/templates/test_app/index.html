@@ -1,4 +1,4 @@
-{# mark_as_read_by_url automatically marks all messages with #}
+    {# mark_as_read_by_url automatically marks all messages with #}
 {# url = request.get_full_path and user=request.user as READ #}
 {# So, when you click a specific page, it can autmatically close #}
 {# some messages. #}
@@ -10,7 +10,7 @@
 
     <!-- jquery from CDN and CSS for it -->
     <script type="text/javascript"
-            src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+            src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <link rel="stylesheet"
           href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
@@ -21,6 +21,7 @@
 <body style="width: 600px; margin-left: auto; margin-right: auto;">
 <p>
     Hi. Thank you for testing this software!
+    <div id="monitioMessages"></div>
 </p>
 
 {% if request.user.is_anonymous %}
@@ -60,7 +61,13 @@
     is no support for them.<p>
     That's all. Now go and have fun! :-)
 </p>
-    {% include "monitio/message/includes/messages.jquery.html" %}
+    <script type="application/javascript">
+    $(document).ready(function(){
+        $("#monitioMessages").MessagesPlaceholder({
+            "url": '{% url "persistent-messages-sse" user.username %}'
+        });
+    });
+    </script>
 {% endif %}
 </body>
 </html

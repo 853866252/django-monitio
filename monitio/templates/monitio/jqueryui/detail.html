@@ -1,8 +1,0 @@
-{# Example message detail template #}
-{% load message_filters %}
-<div class="message{% if message.tags %} {{ message.tags }}{% endif %} {{ message|message_css_classes }}>">
-    {% if message.subject %}<h1>{{ message.subject }}</h1>{% endif %}
-    <p>{{ message.created|date }}</p>
-    {% if message.from_user %}<p>From: {{ message.from_user }}</p>{% endif %}
-    <p>{{ message.message }}</p>
-</ul>

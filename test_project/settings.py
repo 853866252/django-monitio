@@ -125,7 +125,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
-    'django_transaction_signals',
     'django_sse',
     'corsheaders',
 

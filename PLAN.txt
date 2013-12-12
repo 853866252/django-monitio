@@ -1,3 +1,31 @@
+
+
+    TERAZ:
+        zamykanie komunikatow po klikniecu na close
+            -> zapytanie po JSON w tle
+        tak samo dla wszystkich komunikatow
+
+    POTEM:
+        testy maja byc przechodzone
+            testy zamykania
+            testy otwierania
+            testy blednego komunikatu
+
+    POTEM:
+        tlumaczenie i18n
+
+    POTEM:
+        temat foundation4
+
+
+DOKUMENTACJA:
+    ze dolaczamy JEDEN plik
+    ze piszemy w nim cos takiego:
+
+    $("#monitioMessages").MessagesPlaceholder(
+    {'url': url do SSE})
+    i juz
+
 ** MSIE 10 does not work in... compatibility OR quirks mode, I have localized
 version and have no idea, which is which :-)
 
@@ -8,7 +36,5 @@ this.
 ** tests for dispatch(), sse and e-mail notifications
 
 ** tests for eventsource (currently disabled in tests, because it block devserver)
-
-Celery task to remove messages, that are read for more than 48 hrs
 
 Better documentation

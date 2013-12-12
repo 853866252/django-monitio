@@ -190,7 +190,7 @@ class PersistentMessageStorage(FallbackStorage):
 
         return super(PersistentMessageStorage, self).update(response)
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def add(self, level, message, extra_tags='', subject='', user=None,
             from_user=None, expires=None, close_timeout=None,
             sse=False, email=False, url=None):

@@ -1,4 +1,4 @@
-django
+django>=1.6
 git+https://github.com/niwibe/django-sse.git#egg=django_sse
 sse
 corsheaders
