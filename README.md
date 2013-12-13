@@ -212,24 +212,30 @@ You need to pass a date and time to `expires` argument. Once the message has exp
 To add monitio to your template:
 
 * add to `<head>` section:
-
+    ```
     {% include "monitio/header.html" %}
+    ```
+    
  This will include `yaffle.js`, `monitio.js` monitio translations and themes.
  
 * in the `<body>` section, place the message placeholder anywhere you like:
 
+    ```
     <div id="monitioMessages"></div>
+    ```
     
 * ... and initialize monitio, optionally passing theme parameter:
-
+    ```
     $(document).ready(function () {
         $("#monitioMessages").MessagesPlaceholder({
             "url": '{% url "monitio:persistent-messages-sse" user.username %}',
             "theme": "foundation" // remove for jqueryui theme     
         });
     });
-
+    ```
 * don't forget to add links to `jquery`, `jqueryui` and optionally to `foundation 5`
+
+* if any problems, check `foundation_index.html` in the `test_app/templates` directory, as it is much simpler than original one. 
 
 ### Creating notifications from background tasks (eg. Celery) ###
 
