@@ -1,11 +1,3 @@
-    DOKUMENTACJA:
-        ze dolaczamy JEDEN plik
-        ze piszemy w nim cos takiego:
-
-        $("#monitioMessages").MessagesPlaceholder(
-        {'url': url do SSE})
-        i juz
-
 ** MSIE 10 does not work in... compatibility OR quirks mode, I have localized
 version and have no idea, which is which :-)
 
