@@ -225,8 +225,7 @@ To add monitio to your template:
     $(document).ready(function () {
         $("#monitioMessages").MessagesPlaceholder({
             "url": '{% url "monitio:persistent-messages-sse" user.username %}',
-            "theme": "foundation"
-            // or, by default it is "theme": "jqueryui"            
+            "theme": "foundation" // remove for jqueryui theme     
         });
     });
 
