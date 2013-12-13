@@ -2,7 +2,7 @@ if (window.monitio == undefined) window.monitio = {};
 
 monitio = {
     messages: [],
-    placeholder: null,
+    widget: null,
     theme: null,
     themes: {},
     levels: {
@@ -37,6 +37,7 @@ monitio.themes.jqueryui = {
                     .css("padding", "0 .7em")
                     .css("margin-top", "5px")
                     .css("overflow", "auto")
+                    .attr("id", "message-" + message.pk)
                     .append([
                                 $("<span/>")
                                     .addClass("ui-icon " + monitio.theme.getCSSIcons(message.level))
@@ -55,6 +56,7 @@ monitio.themes.jqueryui = {
                                         $("<a>close</a>")
                                             .addClass("message-close icon")
                                             .attr("href", " /messages/mark_read/" + message.pk + "/")
+                                            .click(monitio.theme.closeMessageClicked)
                                     ])
                     ])
             ]);
@@ -79,6 +81,10 @@ monitio.themes.jqueryui = {
 
                         $("<a/>")
                             .attr("href", "/messages/mark_read/all/")
+                            .click(function(){
+                                $(monitio.widget).MessagesPlaceholder("closeAllMessages");
+                                return false;
+                            })
                             .addClass("message-close-all")
                             .append("close all messages")
                     ])
@@ -110,6 +116,20 @@ monitio.themes.jqueryui = {
                 return "ui-icon-circle-close";
         }
         return "ui-icon-info";
+    },
+
+    closeMessageClicked: function(evt){
+        /* This is in theme, because this function needs to get to the
+        "toplevel" message DIV, which may be theme-dependent
+         */
+        var elem = $(evt.currentTarget);
+
+        $(monitio.widget).MessagesPlaceholder(
+            "closeMessage",
+            elem.parent().parent().parent().parent(),
+            elem.attr("href"));
+
+        return false;
     }
 };
 
@@ -141,8 +161,8 @@ $.widget("monitio.MessagesPlaceholder", {
         });
 
         this.element.append("<div/>");
+        monitio.widget = this.element;
         monitio.placeholder = this.element.children().last();
-
 
         $.ajax({
             dataType: 'json',
@@ -162,7 +182,6 @@ $.widget("monitio.MessagesPlaceholder", {
                 })
             }
         });
-
     },
 
     addMessage: function (msg) {
@@ -171,8 +190,31 @@ $.widget("monitio.MessagesPlaceholder", {
         if (monitio.placeholder.children().length == 2) {
             monitio.placeholder.parent().append(
                 monitio.theme.getCloseAllHTML());
-        }
-        ;
+        };
+    },
+
+    closeMessage: function(msgDiv, url){
+        $.ajax({
+            url: url,
+            method: "GET",
+            success: function(){
+                msgDiv.remove();
+                if (monitio.placeholder.children().length==1)
+                    monitio.placeholder.parent().children().last().remove();
+            }
+        });
+    },
+
+    closeAllMessages: function(){
+        $.ajax({
+            url: '/messages/mark_read/all/',
+            method: "GET",
+            success: function(){
+                monitio.placeholder.children().remove();
+                monitio.placeholder.parent().children().last().remove();
+            }
+        });
+
     }
 
 });

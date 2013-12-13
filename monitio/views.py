@@ -16,6 +16,7 @@ from monitio import testutil
 from monitio.models import Monit
 from monitio.storage import get_user
 from monitio.conf import settings
+from django import db
 
 SSE_ANONYMOUS = "__anonymous__"
 
@@ -93,15 +94,13 @@ class DynamicChannelRedisQueueView(RedisQueueView):
         return self.kwargs.get('channel') or self.redis_channel
 
     def _iterator(self):
-        #yield u"event: debug\ndata: " + (" " * 2048) + "\n" + "retry: 2000\n"
+        yield u"event: debug\ndata: " + (" " * 2048) + "\n" + "retry: 2000\n"
         try:
             for subiterator in self.iterator():
                 msg = u''
                 for bufferitem in self.sse:
                     msg = msg + bufferitem
                 yield msg
-                print "X" * 90
-                print msg
         except ConnectionError, e:
             error_data = dict(
                 extra_tags="",
@@ -128,8 +127,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
         self.args = args
         self.kwargs = kwargs
 
-        from django import db
-        db.close_connection()
+        db.close_old_connections()
 
         response = HttpResponse(self._iterator(), content_type="text/event-stream")
         response['Cache-Control'] = 'no-cache'

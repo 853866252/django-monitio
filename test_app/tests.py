@@ -15,19 +15,19 @@ User = get_user_model()
 
 
 class IndexPageMixin:
-    def close_all_div(self):
-        return self.find_element_by_jquery(".message-close-all-div")
 
     def close_all_link(self):
-        return self.find_element_by_jquery(".message-close-all")
+        return self.find_element_by_jquery("a.message-close-all")
 
     def message_div(self, message_id):
         return self.find_element_by_jquery("#message-%i" % message_id)
 
-    def add_message_by_js(self, pk, subject, message):
-        return self.execute_script("""newMessage({'pk':arguments[0],
-            'subject': arguments[1], 'message': arguments[2]});""",
-                                   pk, subject, message)
+    def add_message_by_js(self, pk, subject, message, level=120):
+        return self.execute_script("""
+            monitio.widget.MessagesPlaceholder("addMessage",
+            {"subject": arguments[1], "message": arguments[2],
+            "level": arguments[3], "pk": arguments[0]});""" ,
+                                   pk, subject, message, level)
 
 
 class IndexPageFirefox(IndexPageMixin, MyWebDriver(webdriver.Firefox)):
@@ -47,10 +47,14 @@ class MonitioTestCase(SeleniumTestCase):
     pageClass = IndexPageFirefox
 
     def assertCloseAllVisible(self):
-        self.assertEquals(self.page.close_all_div().visible(), True)
+        self.assertEquals(self.page.close_all_link().visible(), True)
 
     def assertCloseAllInvisible(self):
-        self.assertEquals(self.page.close_all_div().visible(), False)
+        try:
+            self.page.close_all_link()
+            raise Exception("this element should not exist")
+        except InvalidSelectorException:
+            pass # okay
 
     def setUp(self):
         SeleniumTestCase.setUp(self)
@@ -81,7 +85,6 @@ class TestSeleniumLoggedIn(MonitioTestCase):
         self.assertNotIn("Server Error (500)", self.page.page_source)
 
     def test_no_messages(self):
-        print self.page.page_source
         self.assertCloseAllInvisible()
 
     def test_add_message_by_js(self):

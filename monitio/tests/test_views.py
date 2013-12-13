@@ -65,14 +65,6 @@ class TestViews(TestCase):
     def user_not_authenticated(self):
         self.request.user.is_authenticated = lambda self=None: False
 
-    def test_message_detail(self):
-        self.assert404(message_detail)
-
-        self.assertUnread()
-        res = message_detail(self.request, self.message.pk)
-        self.assertRead()
-        self.assertContains(res, 'foo')
-
     def test_message_delete(self):
         self.assert404(message_delete)
 
