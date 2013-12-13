@@ -22,32 +22,6 @@ application is currently properly running on MSIE 10, Opera 12, FFox 16 and
 Safari 5.1.7 on Windows. Also, monitio has been tested in production environment
 with nginx + gunicorn, which also has been found to work properly. 
 
-
-Long explanation
-----------------
-There are situations in Django, when you want to perform a task in background,
-via Celery or something similar, then you want to inform the user about it.
-
-The process may be just a few seconds long and the user may have not yet
-closed the browser window or changed the web page. 
-
-Or, the process may take much more time. 
-
-The user may already have closed the browser window, right? 
-
-So let's inform the user after he/she logs in again. And, let's have an option to give
-him or her some information over e-mail. That would be cool.
-
-On the other hand, what if the user waits patiently, staring at the browser window? Let's give him or her a dynamic pop-up with a message. Let's do that in a cool way, using HTML5's [SSE](http://en.wikipedia.org/wiki/Server-sent_events)
-
-This project is an attept to be a definitive turnkey solution for such situations.
-It is built on [maurojp](https://github.com/maurojp) fork of django-persistent-messages by [philomat](https://github.com/philomat),
- it uses django-sse with Redis for dynamic notification and EventSource as a polyfill for older browsers, that don't support SSE.
-
-So, as a result of using this piece of software, you get dynamic, lightweight
-notifications for your end-users, INCLUDING anonymous users, with an option to
-leave persistent messages. And e-mail your peeps. Isn't that cool?
-
 Documentation
 -------------
 
@@ -78,19 +52,22 @@ This document assumes that you are familiar with Python and Django.
             'monitio',
         )
 
-4. Make sure Django's `MessageMiddleware` is in your `MIDDLEWARE_CLASSES` setting (which is the case by default), also enable `CorsMiddleware` there:
+4. Make sure Django's `MessageMiddleware` is in your `MIDDLEWARE_CLASSES` setting (which is the case by default), also enable `CorsMiddleware` there. Add `LocaleMiddleware` if you want to use translations:
 
         MIDDLEWARE_CLASSES = (
             ...
             'django.contrib.messages.middleware.MessageMiddleware',
     		'corsheaders.middleware.CorsMiddleware',
+            'django.middleware.locale.LocaleMiddleware',
+            ...
         )
 
-5. Add the CONTEXT_PROCESSOR for messages:
+5. Add the CONTEXT_PROCESSOR for messages and static URL:
 
         CONTEXT_PROCESSORS = (
             ...
             'django.contrib.messages.context_processors.messages',
+            'django.core.context_processors.static',
             ...
         )
 
@@ -98,7 +75,7 @@ This document assumes that you are familiar with Python and Django.
 6. Add the `monitio` URLs to your URL conf. For instance, in order to make messages available under `http://domain.com/messages/`, add the following line to `urls.py`.
 
         urlpatterns = patterns('',
-            (r'^messages/', include('monitio.urls')),
+            (r'^messages/', include('monitio.urls', namespace='monitio')),
             ...
         )
 
@@ -232,23 +209,28 @@ You need to pass a date and time to `expires` argument. Once the message has exp
 
 ### Displaying messages ###
 
-Messages can be displayed [as described in the Django manual](http://docs.djangoproject.com/en/dev/ref/contrib/messages/#displaying-messages). However, you are probably going to want to include links tags for closing each message (i.e. marking it as read). In your template, use something like:
+To add monitio to your template:
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-            {% if message.subject %}<strong>{{ message.subject }}</strong><br />{% endif %}
-            {{ message.message }}<br />
-            {% if message.is_persistent %}<a href="{% url message_mark_read message.pk %}">close</a>{% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+* add to `<head>` section:
 
-You can also use the bundled templates instead. The following line replaces the code above. It allows the user to remove messages and mark them as read using Ajax requests, provided your HTML page includes JQuery:
+    {% include "monitio/header.html" %}
+ This will include `yaffle.js`, `monitio.js` monitio translations and themes.
+ 
+* in the `<body>` section, place the message placeholder anywhere you like:
 
-    {% include "monitio/message/includes/messages.jquery.html" %}
+    <div id="monitioMessages"></div>
+    
+* ... and initialize monitio, optionally passing theme parameter:
+
+    $(document).ready(function () {
+        $("#monitioMessages").MessagesPlaceholder({
+            "url": '{% url "monitio:persistent-messages-sse" user.username %}',
+            "theme": "foundation"
+            // or, by default it is "theme": "jqueryui"            
+        });
+    });
+
+* don't forget to add links to `jquery`, `jqueryui` and optionally to `foundation 5`
 
 ### Creating notifications from background tasks (eg. Celery) ###
 
@@ -274,16 +256,6 @@ In Django `request._messages` is set to the default storage you configured in yo
 
 Let's see some examples of what this means.
 
-#### Display only nonpersistent messages ####
-
-This is reduced version of a template that would let you iterate over nonpersistent messages:
-
-    {% if messages.get_nonpersistent %}
-        {% for message in messages.get_nonpersistent %}
-            [...]
-        {% endfor %}
-    {% endif %}
-
 #### Display number of unread messages ####
 
 Imagine you've created an inbox for your users using Persistent Messages and you want to show them in the menu how many unread messages they have, if they have them:
@@ -292,25 +264,13 @@ Imagine you've created an inbox for your users using Persistent Messages and you
         <li><a href="">inbox {% if messages.count_persistent_unread > 0 %}({{ messages.count_persistent_unread }}){% endif %}</a></li>
     </ul>
 
-### URLs and Persistent Messages Views ####
-
-As said before you can import Persistent Messages URLs in your project's URL conf. This are the named urls you get:
-
-* `{% url message_detail message_id %}` This renders template `monitio/message/detail.html` with specific message in the context as `message`.
-* `{% url message_mark_read message_id %}` Marks specific message as read
-* `{% url message_mark_all_read %}` Marks all messages of the currently logged in user as read
-* `{% url message_delete message_id %}` Deletes specific message
-* `{% url message_delete_all %}` Deletes all the messages of the currently logged in user 
-
-There is plenty of room for improvement in these views and urls.
-
 ### AUTHORS ###
+
+django-monitio is (C) 2013 [mpasternak](https://github.com/mpasternak). 
 
 [philomat](https://github.com/philomat) is the author of original code for
 [django-persistent-messages](https://github.com/philomat/django-persistent-messages),
-which was then forked by [maurojp](https://github.com/maurojp), then it was
-forked by [mpasternak](https://github.com/mpasternak).
-
+which was then forked by [maurojp](https://github.com/maurojp).
 
 
 
