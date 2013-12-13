@@ -22,20 +22,6 @@ from django.utils.translation import ugettext as _
 SSE_ANONYMOUS = "__anonymous__"
 
 
-def message_detail(request, message_id):
-    user = get_user(request)
-    if not user.is_authenticated():
-        raise PermissionDenied
-
-    message = get_object_or_404(Monit, user=user, pk=message_id)
-    message.read = True
-    message.save()
-
-    return render_to_response('monitio/message/detail.html',
-                              {'message': message},
-                              context_instance=RequestContext(request))
-
-
 def message_delete(request, message_id):
     user = get_user(request)
     if not user.is_authenticated():
