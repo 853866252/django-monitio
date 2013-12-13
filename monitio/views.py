@@ -129,7 +129,7 @@ class DynamicChannelRedisQueueView(RedisQueueView):
 
         db.close_old_connections()
 
-        response = HttpResponse(self._iterator(), content_type="text/event-stream")
+        response = StreamingHttpResponse(self._iterator(), content_type="text/event-stream")
         response['Cache-Control'] = 'no-cache'
         response['Software'] = 'django-sse'
         response['X-Accel-Buffering'] = 'no'

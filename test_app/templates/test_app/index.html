@@ -64,7 +64,7 @@
     <script type="application/javascript">
     $(document).ready(function(){
         $("#monitioMessages").MessagesPlaceholder({
-            "url": '{% url "persistent-messages-sse" user.username %}'
+            "url": '{% url "monitio:persistent-messages-sse" user.username %}'
         });
     });
     </script>

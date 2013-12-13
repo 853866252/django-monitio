@@ -45,7 +45,7 @@ monitio.themes.jqueryui = {
                                     .css("margin-right", ".3em"),
                                 $("<div/>")
                                     .css("float", "left")
-                                    .css("width", "85%")
+                                    .css("width", "80%")
                                     .append([
                                         $("<strong/>").text(subject),
                                         message.message
@@ -53,7 +53,7 @@ monitio.themes.jqueryui = {
                                 $("<div/>")
                                     .css("float", "right")
                                     .append([
-                                        $("<a>close</a>")
+                                        $(gettext("<a>close</a>"))
                                             .addClass("message-close icon")
                                             .attr("href", " /messages/mark_read/" + message.pk + "/")
                                             .click(monitio.theme.closeMessageClicked)
@@ -86,7 +86,7 @@ monitio.themes.jqueryui = {
                                 return false;
                             })
                             .addClass("message-close-all")
-                            .append("close all messages")
+                            .append(gettext("close all messages"))
                     ])
             ]);
     },
