@@ -1,10 +1,6 @@
 ** MSIE 10 does not work in... compatibility OR quirks mode, I have localized
 version and have no idea, which is which :-)
 
-** POSSIBLE RACE CONDITION: if JS gets 2 messages with THE SAME PK, it should
-DISCARD the 2nd message. As this has not yet appeared, I'm not implementing
-this.
-
 ** tests for dispatch(), sse and e-mail notifications
 
 ** tests for eventsource (currently disabled in tests, because it block devserver)

@@ -1,14 +1,11 @@
 import os
 from setuptools import setup, find_packages
 
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
 setup(
     name='django-monitio',
-    version='0.2.1',
+    version='0.3',
     description='Unified, persistent and dynamic user messages/notifications for Django',
-    long_description=read('README.md'),
+    long_description=open('README.md').read(),
     author='mpasternak',
     license='BSD',
     url='http://github.com/mpasternak/django-monitio',
