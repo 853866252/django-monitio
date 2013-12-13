@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-20 22:56+0200\n"
-"PO-Revision-Date: 2013-06-20 22:58+0100\n"
+"POT-Creation-Date: 2013-12-13 22:31+0100\n"
+"PO-Revision-Date: 2013-12-13 22:32+0100\n"
 "Last-Translator: Michał Pasternak <michal.dtz@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,18 +16,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.6.2\n"
+"Language: pl\n"
 
-#: .\models.py:55
+#: .\models.py:62
 #, python-format
 msgid "%(subject)s: %(message)s"
 msgstr "%(subject)s: %(message)s"
 
-#: .\templates\monitio\message\includes\message_li.html.py:23
-#: .\templates\monitio\message\includes\sse_template.html.py:12
+#: .\views.py:109
+msgid ""
+"Cannot connect to Redis server. Please contact your system administrator. In "
+"case you are the system administrator, please make sure, that the Redis "
+"server is configured and running correctly."
+msgstr ""
+"Nie mogę połączyć się z serwerem Redis. Proszę, skontaktuj się ze swoim "
+"administratorem systemu. Jeżeli to Ty jesteś administratorem systemu, "
+"proszę, upewnij się, że serwer Redis jest skonfigurowany i funkcjonuje "
+"poprawnie."
+
+#: .\views.py:113
+msgid "Redis server error"
+msgstr "Błąd serwera Redis"
+
+#: .\templates\monitio\message_li.html:20
+#: .\templates\monitio\sse_template.html:13
 msgid "close"
 msgstr "zamknij"
 
-#: .\templates\monitio\message\includes\messages.html.py:21
+#: .\templates\monitio\messages.html:22
 msgid "close all messages"
 msgstr "zamknij wszystkie komunikaty"

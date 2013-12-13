@@ -1,0 +1,59 @@
+{# mark_as_read_by_url automatically marks all messages with #}
+{# url = request.get_full_path and user=request.user as READ #}
+{# So, when you click a specific page, it can autmatically close #}
+{# some messages. #}
+{% load mark_as_read_by_url %}
+{% mark_as_read_by_url %}<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>monitio on Foundation 5</title>
+
+
+    <link rel="stylesheet"
+          href="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.0.2/css/normalize.css">
+    <link rel="stylesheet"
+          href="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.0.2/css/foundation.css">
+
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+    {% include "monitio/header.html" %}
+
+</head>
+<body>
+
+<!-- body content here -->
+<div class="row columns">
+    <div class="large-12"><p>
+        Hi. Messages placeholder below. This demo uses <a
+            href="http://foundation.zurb.com/">Foundation 5 library</a>.
+        </p>
+    </div>
+    <div class="large-12">
+        <div id="monitioMessages"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(document).foundation();
+
+        $("#monitioMessages").MessagesPlaceholder({
+            "url": '{% url "monitio:persistent-messages-sse" user.username %}',
+            "theme": "foundation"
+        });
+
+    });
+</script>
+<!-- because of http://stackoverflow.com/questions/20140710/foundation-5-upgrade-layer-must-be-a-document-node
+ we are putting those files here and not in the header section. -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.0.2/js/vendor/custom.modernizr.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.0.2/js/foundation.min.js"></script>
+</body>
+</html>
+

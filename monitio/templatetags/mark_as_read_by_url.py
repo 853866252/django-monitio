@@ -16,10 +16,11 @@ def mark_as_read_by_url(context):
     try:
         user_id = request.user.pk
     except AttributeError:
-        return
+        return ''
 
     if user_id is None:
-        return
+        return ''
 
     url = request.get_full_path()
     Monit.objects.filter(user_id=user_id, read=False, url=url).update(read=True)
+    return ''

@@ -17,6 +17,7 @@ from monitio.models import Monit
 from monitio.storage import get_user
 from monitio.conf import settings
 from django import db
+from django.utils.translation import ugettext as _
 
 SSE_ANONYMOUS = "__anonymous__"
 
@@ -105,8 +106,11 @@ class DynamicChannelRedisQueueView(RedisQueueView):
             error_data = dict(
                 extra_tags="",
                 level=140,
-                message="Cannot connect to Redis server",
-                subject="Redis error")
+                message=_("Cannot connect to Redis server. Please contact your "
+                          "system administrator. In case you are the system "
+                          "administrator, please make sure, that the Redis "
+                          "server is configured and running correctly."),
+                subject=_("Redis server error"))
             msg = "event: message\ndata: %s\n\n\n" % json.dumps(error_data)
             yield msg
             raise e

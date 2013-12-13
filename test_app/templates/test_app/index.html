@@ -1,4 +1,4 @@
-    {# mark_as_read_by_url automatically marks all messages with #}
+{# mark_as_read_by_url automatically marks all messages with #}
 {# url = request.get_full_path and user=request.user as READ #}
 {# So, when you click a specific page, it can autmatically close #}
 {# some messages. #}
@@ -20,8 +20,15 @@
 
 <body style="width: 600px; margin-left: auto; margin-right: auto;">
 <p>
-    Hi. Thank you for testing this software!
+    Hi. Thank you for testing this software! Messages placeholder can be found
+    below this line. If there are no messages, read on to learn, how to
+    send offline live messages to this web page.
     <div id="monitioMessages"></div>
+    <p style="margin-left: 5em; font-style: italic; font-size: 0.8em;">
+        If you like, you can try <a href="./foundation/">Foundation 5 demo</a>
+        instead. If you do, please remember, that all the instructions
+        below also apply to <a href="./foundation/">Foundation 5 demo</a>!
+    </p>
 </p>
 
 {% if request.user.is_anonymous %}
@@ -36,13 +43,15 @@
         how to test dynamic notifications messages.
     </p>
 {% else %}
-    Now go to the command prompt and run:
+    Go to the command prompt and run:
     <pre>
     $ manage.py send_message [from user] [to user] [INFO|ERROR] [message]
 </pre>
     for example:
     <pre>
     $ manage.py send_message test test INFO "This is a test message"
+    $ manage.py send_message test test SUCCESS "This is a success message"
+    $ manage.py send_message test test WARNING "This is a warning message"
     </pre>
     <strong>Make sure you are runing Redis</strong> on 127.0.0.1:6379 before
     issuing that command.
