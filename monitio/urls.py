@@ -8,8 +8,7 @@ js_info_dict = {
 }
 urlpatterns = patterns(
     'monitio.views',
-    url(r'^detail/(?P<message_id>\d+)/$', 'message_detail',
-        name='message_detail'),
+
 
     # Mark read
     url(r'^mark_read/(?P<message_id>\d+)/$', 'message_mark_read',
