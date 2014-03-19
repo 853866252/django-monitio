@@ -5,7 +5,6 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.db import transaction
 from django.db.models import Q
 from django.conf import settings
-from django_transaction_signals import defer
 from monitio import notify
 
 from monitio.models import Monit
@@ -238,10 +237,13 @@ class PersistentMessageStorage(FallbackStorage):
             message.save()
 
             if sse:
-                # Sent delayed SSE notification
+                # Sent delayed SSE notification when the transaction is
+                # commited:
+                raise NotImplementedError
                 defer(notify.via_sse, message.pk)
 
             if email:
+                raise NotImplementedError
                 defer(notify.via_email, message.pk)
 
             return message

@@ -10,6 +10,7 @@ setup(
     license='BSD',
     url='http://github.com/mpasternak/django-monitio',
     keywords = ['messages', 'django', 'persistent', 'sse'],
+    requires=['django_sse', 'sse', 'django>=1.6', 'corsheaders'],
     packages=find_packages(exclude=['test_app', 'test_project']),
     package_data={'monitio': [
         'locale/*/LC_MESSAGES/*',
