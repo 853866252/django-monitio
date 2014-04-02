@@ -193,6 +193,7 @@ class PersistentMessageStorage(FallbackStorage):
     def add(self, level, message, extra_tags='', subject='', user=None,
             from_user=None, expires=None, close_timeout=None,
             sse=False, email=False, url=None):
+        # TODO: remove sse and email parameters
         """
         Adds or queues a message to the storage
 
@@ -236,15 +237,15 @@ class PersistentMessageStorage(FallbackStorage):
         if STORE_WHEN_ADDING:
             message.save()
 
-            if sse:
-                # Sent delayed SSE notification when the transaction is
-                # commited:
-                raise NotImplementedError
-                defer(notify.via_sse, message.pk)
-
-            if email:
-                raise NotImplementedError
-                defer(notify.via_email, message.pk)
+            # if sse:
+            #     # Sent delayed SSE notification when the transaction is
+            #     # commited:
+            #     raise NotImplementedError
+            #     defer(notify.via_sse, message.pk)
+            #
+            # if email:
+            #     raise NotImplementedError
+            #     defer(notify.via_email, message.pk)
 
             return message
         else:

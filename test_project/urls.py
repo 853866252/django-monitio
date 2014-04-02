@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url, include
 from django.contrib import admin
 
 from test_app.views import TestView
-from views import TestFoundationView
+from test_app.views import TestFoundationView
 
 admin.autodiscover()
 

@@ -1,3 +1,20 @@
+BIG CHANGE, version 0.4
+=======================
+
+With the transaction framework changed in Django 1.6 and having in mind, that
+transaction signals are not really a good idea, at this moment you send the
+notifies MANUALLY.
+
+API functions return a Message object and if you want to notify about it,
+use notify.via_sse
+
+In the future, this package could become a thin layer of just the notification
+code, as the persistent-message applications seem to be popular, perhaps it
+would be better to find a well-supported persistent-message application AND
+have this package as separate, thin layer of glue-code between that persistent
+messaging library and SSE messaging delivery.
+
+
 Monitio for Django
 ==================
 

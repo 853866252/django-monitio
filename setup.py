@@ -3,18 +3,19 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-monitio',
-    version='0.3.1',
+    version='0.4',
     description='Unified, persistent and dynamic user messages/notifications for Django',
     long_description=open('README.md').read(),
     author='mpasternak',
     license='BSD',
     url='http://github.com/mpasternak/django-monitio',
     keywords = ['messages', 'django', 'persistent', 'sse'],
-    requires=['django_sse', 'sse', 'django>=1.6', 'corsheaders'],
+    requires=['django_sse', 'sse', 'django', 'corsheaders'],
     packages=find_packages(exclude=['test_app', 'test_project']),
     package_data={'monitio': [
         'locale/*/LC_MESSAGES/*',
         'static/monitio/js/*.js',
+        'static/monitio/js/themes/*.js',
         'static/monitio/css/*.css',
         'templates/*/*.html',
         'templates/*/*/*.html',

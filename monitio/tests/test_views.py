@@ -1,14 +1,15 @@
 # -*- encoding: utf-8 -*-
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.http import Http404
-
 from django.test import TestCase, RequestFactory
 from django_dynamic_fixture import G
+from monitio.views import SameUserChannelRedisQueueView, \
+    DynamicChannelRedisQueueView, message_delete, message_delete_all, \
+    message_mark_read, message_mark_all_read
+
 from monitio.models import Monit
 from monitio.templatetags.mark_as_read_by_url import mark_as_read_by_url
-from monitio.views import message_detail, message_delete, message_delete_all, message_mark_read, message_mark_all_read, DynamicChannelRedisQueueView, SameUserChannelRedisQueueView
 
 
 User = get_user_model()
