@@ -246,8 +246,8 @@ class PersistentMessageStorage(FallbackStorage):
             # if email:
             #     raise NotImplementedError
             #     defer(notify.via_email, message.pk)
-
-            return message
         else:
             self.added_new = True
             self._queued_messages.append(message)
+
+        return message

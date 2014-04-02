@@ -57,7 +57,7 @@ def create_message(to_user, level, message, from_user=None, extra_tags='',
 
     request.messages = PersistentMessageStorage(request)
 
-    request.messages.add(level=level, message=message, extra_tags=extra_tags,
+    return request.messages.add(level=level, message=message, extra_tags=extra_tags,
                          subject=subject, from_user=from_user, expires=expires,
                          close_timeout=close_timeout, sse=sse, email=email,
                          url=url)
