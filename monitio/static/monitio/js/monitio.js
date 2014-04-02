@@ -79,7 +79,8 @@ $.widget("monitio.MessagesPlaceholder", {
     },
 
     addMessage: function (msg) {
-        monitio.placeholder.append("<div/>");
+        monitio.placeholder.append("<div/>").attr("is_persistent", msg.is_persistent);
+
         monitio.placeholder.children().last().FlashMessage({'message': msg});
         if (monitio.placeholder.children().length == 2) {
             monitio.placeholder.parent().append(
@@ -88,14 +89,22 @@ $.widget("monitio.MessagesPlaceholder", {
     },
 
     closeMessage: function(msgDiv, url){
+
+        var removeDiv = function(){
+            msgDiv.remove();
+            if (monitio.placeholder.children().length==1)
+                monitio.placeholder.parent().children().last().remove();
+        }
+
+        if (msgDiv.attr("is_persistent")!="true") {
+            removeDiv();
+            return
+        }
+
         $.ajax({
             url: url,
             method: "GET",
-            success: function(){
-                msgDiv.remove();
-                if (monitio.placeholder.children().length==1)
-                    monitio.placeholder.parent().children().last().remove();
-            }
+            success: removeDiv
         });
     },
 

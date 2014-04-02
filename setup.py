@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-monitio',
-    version='0.4.1',
+    version='0.4.2',
     description='Unified, persistent and dynamic user messages/notifications for Django',
     long_description=open('README.md').read(),
     author='mpasternak',
