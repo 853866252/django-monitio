@@ -96,7 +96,7 @@ $.widget("monitio.MessagesPlaceholder", {
                 monitio.placeholder.parent().children().last().remove();
         }
 
-        if (msgDiv.attr("is_persistent")!="true") {
+        if (msgDiv.parent().attr("is_persistent")!="true") {
             removeDiv();
             return
         }
