@@ -130,8 +130,8 @@ This document assumes that you are familiar with Python and Django.
 12. Setup a production server - for [nginx](http://nginx.org/) + [gunicorn](http://gunicorn.org), please use configuration below:
 
 		
-		location ~ ^/messages {
-			proxy_pass http://your-gunicorn-address.../
+		location ~ ^/messages/sse/(?<user>)$ {
+		        proxy_pass http://your-gunicorn-address.../messages/sse/$user$is_args$args;
 			proxy_buffering off;
 			proxy_cache off;
 			proxy_set_header Host $host;
