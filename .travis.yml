@@ -12,7 +12,7 @@ install:
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - "sh -t install_OS_test_dependencies.sh"
+  - "sh -e install_OS_test_dependencies.sh"
   - "export PATH=`pwd`:$PATH"
 script:
   - python manage.py test
