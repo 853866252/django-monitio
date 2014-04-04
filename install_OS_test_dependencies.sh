@@ -7,3 +7,5 @@ sudo apt-get install google-chrome-stable firefox
 echo "downloading chromedriver..."
 wget http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip
 unzip -o chromedriver_linux64.zip
+echo "adding execution permission to chromedriver binary file"
+chmod +x chromedriver
