@@ -43,6 +43,8 @@
     $(document).ready(function () {
         $(document).foundation();
 
+
+
         $("#monitioMessages").MessagesPlaceholder({
             "url": '{% url "monitio:persistent-messages-sse" user.username %}',
             "theme": "foundation"

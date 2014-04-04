@@ -23,12 +23,13 @@
     Hi. Thank you for testing this software! Messages placeholder can be found
     below this line. If there are no messages, read on to learn, how to
     send offline live messages to this web page.
-    <div id="monitioMessages"></div>
-    <p style="margin-left: 5em; font-style: italic; font-size: 0.8em;">
-        If you like, you can try <a href="./foundation/">Foundation 5 demo</a>
-        instead. If you do, please remember, that all the instructions
-        below also apply to <a href="./foundation/">Foundation 5 demo</a>!
-    </p>
+
+<div id="monitioMessages"></div>
+<p style="margin-left: 5em; font-style: italic; font-size: 0.8em;">
+    If you like, you can try <a href="./foundation/">Foundation 5 demo</a>
+    instead. If you do, please remember, that all the instructions
+    below also apply to <a href="./foundation/">Foundation 5 demo</a>!
+</p>
 </p>
 
 {% if request.user.is_anonymous %}
@@ -71,11 +72,26 @@
     That's all. Now go and have fun! :-)
 </p>
     <script type="application/javascript">
-    $(document).ready(function(){
-        $("#monitioMessages").MessagesPlaceholder({
-            "url": '{% url "monitio:persistent-messages-sse" user.username %}'
+        $(document).ready(function () {
+
+            initial = [];
+            {% if messages %}
+                {% for message in messages %}
+                    initial.push({
+                        'subject': '{{ message.subject }}',
+                        'message': '{{ message.message }}',
+                        'level': '{{ message.level }}',
+                        'url': '{{ message.url }}',
+                        'is_persistent': {{ message.is_persistent|lower }},
+                        'pk': '{{ message.pk }}'});
+                {% endfor %}
+            {% endif %}
+
+            $("#monitioMessages").MessagesPlaceholder({
+                "url": '{% url "monitio:persistent-messages-sse" user.username %}',
+                "initial": initial
+            });
         });
-    });
     </script>
 {% endif %}
 </body>

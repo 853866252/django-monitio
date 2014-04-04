@@ -127,11 +127,10 @@ This document assumes that you are familiar with Python and Django.
             'path/to/monitio/templates')
         )
         
-12. Setup a production server - for [nginx](http://nginx.org/) + [gunicorn](http://gunicorn.org), please use configuration below:
-
+12. Setup a server - for [nginx](http://nginx.org/) + [gunicorn](http://gunicorn.org), please use configuration below:
 		
 		location ~ ^/messages/sse/(?<user>)$ {
-		        proxy_pass http://your-gunicorn-address.../messages/sse/$user$is_args$args;
+            proxy_pass http://your-gunicorn-address.../messages/sse/$user$is_args$args;
 			proxy_buffering off;
 			proxy_cache off;
 			proxy_set_header Host $host;
@@ -141,8 +140,10 @@ This document assumes that you are familiar with Python and Django.
 			chunked_transfer_encoding off;
 		}
 
-   And, for [gunicorn](http://gunicorn.org), make sure you install [gevent](http://www.gevent.org/) and run [gunicorn](http://gunicorn.org) with parameter `-k gevent`
-
+   And, for [gunicorn](http://gunicorn.org), make sure you install [gevent](http://www.gevent.org/) and run [gunicorn](http://gunicorn.org) with parameter `-k gevent`.
+   I *strongly* suggest you run the gevent-enabled server only for serving SSE messages and keep another gunicorn server for everything else - for some (I suppose, rare)
+   cases, gevent can be problematic if you access network from your website code. For example, my use case was using XMPP, which did not work with gevent (both
+   xmpppy and SleekXMPP modules did not).
 
 Using messages in views and templates
 -------------------------------------
@@ -168,7 +169,7 @@ This app provides constants with the same names, the difference being that messa
     messages.ERROR
 
 **Note**: Let's stress the importance of this. If you use `monitio` constants the message will be stored in the database and kept there till somebody explicitly deletes it. If you use `contrib.messages` constants, you get the same behavior as if you were using a non persistent storage, messages are stored in the database ensuring reception but they are removed right after being accessed.
-
+;
 ### Adding a message ###
 
 Since the app is implemented as a [storage backend](http://docs.djangoproject.com/en/dev/ref/contrib/messages/#message-storage-backends) for Django's [messages framework](http://docs.djangoproject.com/en/dev/ref/contrib/messages/), you can still use the regular Django API to add a message:
@@ -243,13 +244,33 @@ To add monitio to your template:
     
 * ... and initialize monitio, optionally passing theme parameter:
     ```
-    $(document).ready(function () {
-        $("#monitioMessages").MessagesPlaceholder({
-            "url": '{% url "monitio:persistent-messages-sse" user.username %}',
-            "theme": "foundation" // remove for jqueryui theme     
+    <script type="text/javascript">
+        $(document).ready(function () {
+            initial = [];
+            {% if messages %}
+                {% for message in messages %}
+                    initial.push({
+                        'subject': '{{ message.subject }}',
+                        'message': '{{ message.message }}',
+                        'level': '{{ message.level }}',
+                        'url': '{{ message.url }}',
+                        'is_persistent': {{ message.is_persistent|lower }},
+                        'pk': '{{ message.pk }}'});
+                {% endfor %}
+            {% endif %}
+
+
+            $("#monitioMessages").MessagesPlaceholder({
+                "url": '{% url "monitio:persistent-messages-sse" user.username %}',
+                "theme": "foundation" // remove for jqueryui theme,
+                "initial": initial
+            });
+
         });
-    });
+    </script>
+    <div id="monitio"></div>
     ```
+
 * don't forget to add links to `jquery`, `jqueryui` and optionally to `foundation 5`
 
 * if any problems, check `foundation_index.html` in the `test_app/templates` directory, as it is much simpler than original one. 
@@ -288,7 +309,7 @@ Imagine you've created an inbox for your users using Persistent Messages and you
 
 ### AUTHORS ###
 
-django-monitio is (C) 2013 [mpasternak](https://github.com/mpasternak). 
+django-monitio is (C) 2013-2014 [mpasternak](https://github.com/mpasternak).
 
 [philomat](https://github.com/philomat) is the author of original code for
 [django-persistent-messages](https://github.com/philomat/django-persistent-messages),

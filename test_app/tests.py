@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from selenium import webdriver
 from selenium.common.exceptions import StaleElementReferenceException, InvalidSelectorException, NoSuchElementException
 
-from monitio import ERROR, notify, INFO
+from monitio import notify, constants
 from monitio.models import Monit
 from selenium_helpers import SeleniumTestCase, MyWebDriver
 
@@ -98,7 +98,7 @@ class TestSeleniumLoggedIn(MonitioTestCase):
 
     def create_messages(self, no):
         for a in range(no):
-            x = Monit.objects.create(message='LOL 123', level=ERROR,
+            x = Monit.objects.create(message='LOL 123', level=constants.ERROR,
                                      user=self.user)
         return x
 
@@ -158,7 +158,7 @@ class SimpleEventsourceMixin:
         time.sleep(2)
 
         notify.sse(
-            INFO, 31337, 'WUTLOLSKI', 'info unread', "Subject", 'foo', 'foo')
+            constants.INFO, 31337, 'WUTLOLSKI', 'info unread', "Subject", 'foo', 'foo')
 
         self.assertRaises(NoSuchElementException,
                           self.page.find_element_by_id,

@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 
 from django.test import TestCase
 from django_dynamic_fixture import G, N
-from monitio import INFO
+from monitio import constants
 from monitio.models import Monit
 from monitio.storage import get_user, PersistentMessageStorage
 
@@ -40,15 +40,15 @@ class TestStorage(TestCase):
         self.assertEquals(self.storage._get(), ([m], True))
 
     def test_get_persistent(self):
-        m = G(Monit, read=False, user=self.user, expires=None, level=INFO)
+        m = G(Monit, read=False, user=self.user, expires=None, level=constants.INFO)
         self.assertIn(m, self.storage.get_persistent())
 
         n = G(Monit, read=False, user=self.user, expires=None, level=31337)
         self.assertNotIn(n, self.storage.get_persistent())
 
     def test_get_persistent_unread(self):
-        m = G(Monit, user=self.user, expires=None, level=INFO, read=False)
-        n = G(Monit, user=self.user, expires=None, level=INFO, read=True)
+        m = G(Monit, user=self.user, expires=None, level=constants.INFO, read=False)
+        n = G(Monit, user=self.user, expires=None, level=constants.INFO, read=True)
 
         self.assertIn(m, self.storage.get_persistent_unread())
         self.assertNotIn(n, self.storage.get_persistent_unread())
@@ -69,12 +69,12 @@ class TestStorage(TestCase):
         self.assertEquals(Monit.objects.count(), 0)
 
     def test___iter__(self):
-        m = G(Monit, read=False, user=self.user, expires=None, level=INFO)
+        m = G(Monit, read=False, user=self.user, expires=None, level=constants.INFO)
         self.storage._queued_messages = ['bar']
         self.assertEquals(list(self.storage), [m, 'bar'])
 
     def test__store(self):
-        m = N(Monit, read=False, user=self.user, expires=None, level=INFO)
+        m = N(Monit, read=False, user=self.user, expires=None, level=constants.INFO)
         self.assertEquals(m.is_persistent(), True)
         self.assertEquals(Monit.objects.count(), 0)
         self.storage._store([m], 'response')
@@ -84,7 +84,7 @@ class TestStorage(TestCase):
         self.storage.update('response')
 
     def test_add(self):
-        self.storage.add(INFO, 'test')
+        self.storage.add(constants.INFO, 'test')
         self.assertEquals(Monit.objects.count(), 1)
 
 

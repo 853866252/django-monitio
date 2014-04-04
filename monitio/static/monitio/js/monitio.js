@@ -58,24 +58,7 @@ $.widget("monitio.MessagesPlaceholder", {
         monitio.widget = this.element;
         monitio.placeholder = this.element.children().last();
 
-        $.ajax({
-            dataType: 'json',
-            url: "/messages/json/",
-            success: function (data, status, obj) {
-                data.forEach(function (msg) {
-                    self.addMessage(msg);
-                });
-            },
-            error: function(err) {
-                console.log(err);
-                self.addMessage({
-                    'level': 40, // error
-                    'subject': "Error",
-                    'message': "Server error - unable to load messages<br/>(" + err.status + " " + err.statusText + ")",
-                    'pk': null
-                })
-            }
-        });
+        this.options.initial.forEach(self.addMessage);
     },
 
     addMessage: function (msg) {

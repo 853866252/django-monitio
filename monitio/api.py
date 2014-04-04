@@ -1,5 +1,4 @@
-from monitio import notify
-from monitio import constants
+import constants
 
 def add_message(request, level, message, extra_tags='', fail_silently=False,
                 subject='', user=None, email=False, sse=False, from_user=None,

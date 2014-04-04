@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 from django.test import TestCase
 from django_dynamic_fixture import G
-from monitio import api, INFO
+from monitio import api, constants
 
 
 class messages:
@@ -24,7 +24,7 @@ class TestApi(TestCase):
         self.request = PhonyRequest()
 
     def test_add_message(self):
-        api.add_message(self.request, INFO, 'message', sse=False)
+        api.add_message(self.request, constants.INFO, 'message', sse=False)
 
     def test_info(self):
         api.info(self.request, 'message')
@@ -37,4 +37,4 @@ class TestApi(TestCase):
 
     def test_create_message(self):
         api.create_message(
-            G(get_user_model()), INFO, 'message')
+            G(get_user_model()), constants.INFO, 'message')

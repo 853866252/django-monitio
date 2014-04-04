@@ -1,9 +1,24 @@
 # This must be imported first - the DEFAULT_TAGS must be updated
 # before import of monitio.api
-from monitio.constants import *
+import constants
+import notify
 from django.contrib import messages
 
-messages.DEFAULT_TAGS.update(DEFAULT_TAGS)
+messages.DEFAULT_TAGS.update(constants.DEFAULT_TAGS)
 
 from monitio.api import *
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -6,8 +6,6 @@ from django_sse.redisqueue import send_event
 
 from monitio.conf import settings
 from monitio import testutil
-from monitio import constants
-from monitio.models import Monit
 
 
 def email(level, message, extra_tags, subject, user, from_user):
@@ -19,6 +17,8 @@ def email(level, message, extra_tags, subject, user, from_user):
 
 
 def via_email(message_pk):
+    from monitio.models import Monit
+
     try:
         message = Monit.objects.get(pk=message_pk)
     except Monit.DoesNotExist:
@@ -56,6 +56,8 @@ def sse(level, pk, message, extra_tags, subject, user, from_user):
 
 
 def via_sse(message_pk):
+    from monitio.models import Monit
+
     try:
         message = Monit.objects.get(pk=message_pk)
     except Monit.DoesNotExist:
