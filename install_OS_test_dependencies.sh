@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# ugly fix to chrome, chrome-driver on travis -
+# see more info:
+# https://github.com/travis-ci/travis-ci/issues/938
+# based on: https://github.com/jsdevel/webdriver-sync/blob/master/.travis.yml
 sudo apt-get remove chromium-browser
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
 sudo apt-get install ttf-mscorefonts-installer
@@ -21,7 +25,7 @@ Xvfb :99.0 -extension RANDR > /dev/null &
 sudo chmod 1777 /dev/shm
 export WEBDRIVER_SYNC_ENABLE_SELENIUM_STDOUT=true
 export WEBDRIVER_SYNC_ENABLE_SELENIUM_STDERR=true
-
+# end ugly fix to chrome, chrome-driver on travis
 
 # echo "installing browsers..."
 # wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
