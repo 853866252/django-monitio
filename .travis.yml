@@ -13,8 +13,9 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - "sh -e install_OS_test_dependencies.sh"
-  - "export PATH=`pwd`:$PATH"
 script:
+  - "export PATH=`pwd`:$PATH"
+  - "echo $PATH"
   - python manage.py test
 notifications:
   email: false
