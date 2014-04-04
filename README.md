@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/mpasternak/django-monitio.png?branch=master)](https://travis-ci.org/mpasternak/django-monitio)
+[![Build Status](https://drone.io/github.com/mpasternak/django-monitio/status.png)](https://drone.io/github.com/mpasternak/django-monitio/latest)
+
 BIG CHANGE, version 0.4
 =======================
 
