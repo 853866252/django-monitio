@@ -1,0 +1,16 @@
+django>=1.6
+redis
+# django-sse master bransh
+https://github.com/niwibe/django-sse/archive/master.zip
+sse
+# django-cors-headers master branch
+https://github.com/ottoyiu/django-cors-headers/archive/master.zip
+
+# test-requirements
+django-dynamic-fixture
+
+celery
+
+selenium
+# django-selenium-helpers master branch
+https://github.com/mpasternak/django-selenium-helpers/archive/master.zip
