@@ -39,7 +39,8 @@ $.widget("monitio.FlashMessage", {
 
 $.widget("monitio.MessagesPlaceholder", {
     options: {
-        "theme": "jqueryui"
+        "theme": "jqueryui",
+        "initial": []
     },
 
     _create: function () {
