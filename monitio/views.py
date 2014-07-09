@@ -1,6 +1,6 @@
 from django.contrib.messages.api import get_messages
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from django.http.response import StreamingHttpResponse, CompatibleStreamingHttpResponse
+from django.http.response import StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
