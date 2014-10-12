@@ -5,6 +5,7 @@
 # https://github.com/travis-ci/travis-ci/issues/938
 # based on: https://github.com/jsdevel/webdriver-sync/blob/master/.travis.yml
 sudo apt-get remove chromium-browser
+sudo apt-get install libappindicator1
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
 sudo apt-get install ttf-mscorefonts-installer
 sudo apt-get install x-ttcidfont-conf
