@@ -12,7 +12,7 @@ env:
 
 install:
   - pip install $DJANGO_VERSION
-  - pip install -r requirements_test.txt
+  - pip install -r test_project/requirements.txt
 
 before_script:
   - "export DISPLAY=:99.0"
