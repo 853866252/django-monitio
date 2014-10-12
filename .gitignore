@@ -4,3 +4,5 @@ build/*
 dist/*
 django_monitio.egg-info/*
 chromedriver.log
+test_project/components
+test_project/venv
