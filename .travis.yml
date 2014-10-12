@@ -12,18 +12,12 @@ env:
 before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-  - sudo apt-get install chromium-chromedriver
+  - "sh -e install_OS_test_dependencies.sh"
   - "export PATH=`pwd`:$PATH"
 
 install:
   - pip install $DJANGO_VERSION
   - pip install -r test_project/requirements.txt
-
-#before_script:
-#  - "export DISPLAY=:99.0"
-#  - "sh -e /etc/init.d/xvfb start"
-##  - "sh -e install_OS_test_dependencies.sh"
-#  - "export PATH=`pwd`:$PATH"
 
 script:
   - cd test_project
