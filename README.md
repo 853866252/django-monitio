@@ -7,7 +7,7 @@ From my (pretty practical) perspective, anything involving Django and realtime m
 
 So, if you already need to use a second webserver, why not use the first one instead, just with some patches.
 
-Afraid to type `./configure --...`? Don't worry, I've got you covered.
+Afraid to type `./configure --...`? Don't worry, I've got you covered. https://github.com/wandenberg/nginx-push-stream-module/issues/184
 
 The rest is history. 
 
