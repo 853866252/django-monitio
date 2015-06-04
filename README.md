@@ -1,3 +1,17 @@
+DO NOT USE THIS PROJECT
+=======================
+
+Use this module for nginx instead: https://github.com/wandenberg/nginx-push-stream-module . 
+
+From my (pretty practical) perspective, anything involving Django and realtime messages over whatever protocol involves another web server, either gunicorn+gevent (like this approach), or anything Tornado/Twisted/nodejs based, with all the hard parts. Either another HTTP port (admins block that), or a need to proxy it through your webserver of choice (and I was NOT able to make nginx not buffer my SSE stuff). 
+
+So, if you already need to use a second webserver, why not use the first one instead, just with some patches.
+
+Afraid to type `./configure --...`? Don't worry, I've got you covered.
+
+The rest is history. 
+
+
 [![Build Status](https://travis-ci.org/mpasternak/django-monitio.png?branch=master)](https://travis-ci.org/mpasternak/django-monitio)
 [![Build Status](https://drone.io/github.com/mpasternak/django-monitio/status.png)](https://drone.io/github.com/mpasternak/django-monitio/latest)
 
